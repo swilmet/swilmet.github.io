@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Switch from CMake to Autotools | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2012-09-05">2012-09-05</time>: Switch from CMake to Autotools</h2>
+
+<p>
+  Last week I've migrated the build system of
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex">LaTeXila</a>
+  from CMake to the Autotools. Here are the reasons.
+</p>
+
+<h3>The GNU Coding Standards</h3>
+
+<p>
+  With CMake, some important make's targets are missing, for example
+  <code>make uninstall</code>. The main problem is that CMake doesn't follow
+  the
+  <a href="https://www.gnu.org/prep/standards/">GNU Coding Standards</a>
+  (GCS). The purposes of the GCS, with regard to a build system, is to make a
+  program portable, easy to install, and consistent with the way other
+  softwares are built and installed.
+</p>
+
+<p>
+  The GCS has several decades of experience, the standards are well
+  established, and we can trust the GNU hackers for having well conceived them.
+  Those that don't follow them are devoted to reinvent the wheel: they will be
+  faced sooner or later by the same problems already solved by the GCS and the
+  Autotools…
+</p>
+
+<p>
+  Following standards is important both for users and packagers. If every
+  software uses a different build system, with different options etc, it is a
+  nightmare.
+</p>
+
+<h3>Available macros for GNOME applications</h3>
+
+<p>
+  Another reason to use the Autotools, for a GNOME application, is to use the
+  available macros: for the translations (intltool, ITS Tool), the
+  documentation (yelp), the settings (gsettings), …
+</p>
+
+<h3>Creating a tarball</h3>
+
+<p>
+  With the Autotools it is as simple as running <code>make distcheck</code>,
+  and putting some files in <code>EXTRA_DIST</code> or prefixing Automake
+  variables with the <code>dist</code> modifier.
+</p>
+
+<p>
+  It is more complicated with CMake. CPack can be used, but it is far from
+  automatic. When reading the CPack documentation, I changed my mind and wrote
+  a shell script instead.
+</p>
+
+<h3>Learning the Autotools</h3>
+
+<p>
+  The Autotools are not as Autopain as people generally say. The learning curve
+  is maybe steeper, but with a good book
+  (<a href="https://nostarch.com/autotools2e"><em>Autotools - A Practitioner's Guide to GNU Autoconf, Automake, and Libtool</em>, by John Calcote</a>),
+  there are no reasons to be afraid.
+</p>
+
+<p>
+  That said, there are certainly problems in LaTeXila, so some tests before the
+  stable release would be more than welcome ;)
+</p>
+
+<h3>Quick 2026 update and thoughts</h3>
+<p>
+  While resurrecting this article, my thoughts on this are that switching to
+  Autotools was done primarily to benefit from the GNOME macros instead of
+  re-implementing them with CMake. Learning the Autotools permitted me to more
+  easily contribute to GtkSourceView and gedit afterwards. And nowadays in 2026,
+  it's actually CMake that I recommend instead of Autotools. I also recommend
+  CMake over Meson, because with CMake it's possible to write our own functions
+  and macros while Meson lacks that support: with Meson it's often required to
+  copy/paste snippets of code from one project to another.
+</p>
+<p>
+  I've also updated the links (there is now a second edition of the Autotools
+  book).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

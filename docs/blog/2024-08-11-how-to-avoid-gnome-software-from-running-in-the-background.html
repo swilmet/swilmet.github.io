@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>How to avoid gnome-software from running in the background | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2024-08-11">2024-08-11</time>: How to avoid gnome-software from running in the background</h2>
+
+<p>
+  I wanted to share a tip about making
+  <a href="https://www.gnome.org/">GNOME</a> lighter for old computers, by
+  avoiding <a href="https://apps.gnome.org/Software/">gnome-software</a> from
+  running as a background process (to use less memory).
+</p>
+<p>
+  By default, gnome-software runs in the background in order to check for
+  updates and sends notifications about it. If you complete this tutorial, you
+  will need to check for updates manually.
+</p>
+<p>
+  The steps below have been tested on
+  <a href="https://www.opensuse.org/">openSUSE</a> Leap 15.6 with GNOME 45, but
+  it should be easy to adapt to other Linux/Unix distributions.
+</p>
+<p>
+  The old computer has 4 GB of RAM, which is a bit too few for a modern GNOME,
+  especially with Firefox and LibreOffice launched at the same time. As
+  alternatives, it would be possible to install e.g.
+  <a href="https://xfce.org/">Xfce</a> (a lighter desktop environment) or to add
+  a RAM stick.
+</p>
+
+<h3>Checking with the System Monitor</h3>
+<p>
+  GNOME has a nice application called
+  <a href="https://apps.gnome.org/SystemMonitor/">System Monitor</a> to check
+  the memory used and the processes that are running, among other pieces of
+  information.
+</p>
+<p>
+  Alternatively, there are lots of tools available in the terminal. For example
+  <code>htop</code> and a <code>ps</code> command like:
+</p>
+<pre>
+$ ps aux | grep -i soft
+</pre>
+
+<h3>First step: disable the gnome-software autostart</h3>
+<p>
+  For this step, we need to refer to the
+  <a href="https://specifications.freedesktop.org/autostart-spec/latest/">autostart documentation</a>.
+</p>
+<p>
+  In fact, gnome-software is auto-started because there is a
+  <code>*.desktop</code> file placed in one of the autostart directories. In our
+  case, the file is located at:
+  <code>/etc/xdg/autostart/org.gnome.Software.desktop</code>
+</p>
+<p>
+  The autostart documentation explains a clean solution to overwrite an
+  autostart decision, by placing a <code>*.desktop</code> file with the <em>same
+  name</em> but in a directory that has a higher priority. And it explains that
+  by adding <code>Hidden=true</code>, it disables the autostart.
+</p>
+<p>
+  So in our case the solution is simple:
+</p>
+<pre>
+$ mkdir -p ~/.config/autostart/
+$ cp /etc/xdg/autostart/org.gnome.Software.desktop ~/.config/autostart/
+$ echo 'Hidden=true' >> ~/.config/autostart/org.gnome.Software.desktop
+</pre>
+
+<h3>Second step: disable the gnome-shell search provider</h3>
+<p>
+  The above step is not enough, because when searching something in the
+  gnome-shell's <em>Activities Overview</em>, it launches a set of search
+  providers ... including the gnome-software one. And once the gnome-software
+  process runs, it will keep running in the background.
+</p>
+<p>
+  So, you also need to disable the gnome-software search provider. Or to disable
+  <em>all</em> search providers altogether, because it will make GNOME even
+  lighter.
+</p>
+<p>
+  To do that, open the Settings (gnome-control-center) application, go to the
+  Search panel, and disable what you don't need.
+</p>
+<p>
+  It's possible to achieve the same with a <code>gsettings</code> command in the
+  terminal.
+</p>
+
+<h3>Last step</h3>
+<p>
+  Just log out and log in again, or reboot.
+</p>
+
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

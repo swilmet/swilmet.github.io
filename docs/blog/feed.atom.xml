@@ -1,0 +1,2290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <author>
+    <name>Sébastien Wilmet</name>
+  </author>
+  <id>https://wilmet-software.be/blog/feed.atom.xml</id>
+  <link rel="self" type="application/atom+xml" href="https://wilmet-software.be/blog/feed.atom.xml" />
+  <link type="text/html" href="https://wilmet-software.be/blog/index.html" />
+  <title>Sébastien Wilmet</title>
+  <updated>2024-08-11T10:00:00Z</updated>
+
+<entry>
+  <title>How to avoid gnome-software from running in the background</title>
+  <id>https://wilmet-software.be/blog/2024-08-11-how-to-avoid-gnome-software-from-running-in-the-background.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2024-08-11-how-to-avoid-gnome-software-from-running-in-the-background.html" />
+  <published>2024-08-11T10:00:00Z</published>
+  <updated>2024-08-11T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  I wanted to share a tip about making
+  <a href="https://www.gnome.org/">GNOME</a> lighter for old computers, by
+  avoiding <a href="https://apps.gnome.org/Software/">gnome-software</a> from
+  running as a background process (to use less memory).
+</p>
+<p>
+  By default, gnome-software runs in the background in order to check for
+  updates and sends notifications about it. If you complete this tutorial, you
+  will need to check for updates manually.
+</p>
+<p>
+  The steps below have been tested on
+  <a href="https://www.opensuse.org/">openSUSE</a> Leap 15.6 with GNOME 45, but
+  it should be easy to adapt to other Linux/Unix distributions.
+</p>
+<p>
+  The old computer has 4 GB of RAM, which is a bit too few for a modern GNOME,
+  especially with Firefox and LibreOffice launched at the same time. As
+  alternatives, it would be possible to install e.g.
+  <a href="https://xfce.org/">Xfce</a> (a lighter desktop environment) or to add
+  a RAM stick.
+</p>
+
+<h3>Checking with the System Monitor</h3>
+<p>
+  GNOME has a nice application called
+  <a href="https://apps.gnome.org/SystemMonitor/">System Monitor</a> to check
+  the memory used and the processes that are running, among other pieces of
+  information.
+</p>
+<p>
+  Alternatively, there are lots of tools available in the terminal. For example
+  <code>htop</code> and a <code>ps</code> command like:
+</p>
+<pre>
+$ ps aux | grep -i soft
+</pre>
+
+<h3>First step: disable the gnome-software autostart</h3>
+<p>
+  For this step, we need to refer to the
+  <a href="https://specifications.freedesktop.org/autostart-spec/latest/">autostart documentation</a>.
+</p>
+<p>
+  In fact, gnome-software is auto-started because there is a
+  <code>*.desktop</code> file placed in one of the autostart directories. In our
+  case, the file is located at:
+  <code>/etc/xdg/autostart/org.gnome.Software.desktop</code>
+</p>
+<p>
+  The autostart documentation explains a clean solution to overwrite an
+  autostart decision, by placing a <code>*.desktop</code> file with the <em>same
+  name</em> but in a directory that has a higher priority. And it explains that
+  by adding <code>Hidden=true</code>, it disables the autostart.
+</p>
+<p>
+  So in our case the solution is simple:
+</p>
+<pre>
+$ mkdir -p ~/.config/autostart/
+$ cp /etc/xdg/autostart/org.gnome.Software.desktop ~/.config/autostart/
+$ echo 'Hidden=true' >> ~/.config/autostart/org.gnome.Software.desktop
+</pre>
+
+<h3>Second step: disable the gnome-shell search provider</h3>
+<p>
+  The above step is not enough, because when searching something in the
+  gnome-shell's <em>Activities Overview</em>, it launches a set of search
+  providers ... including the gnome-software one. And once the gnome-software
+  process runs, it will keep running in the background.
+</p>
+<p>
+  So, you also need to disable the gnome-software search provider. Or to disable
+  <em>all</em> search providers altogether, because it will make GNOME even
+  lighter.
+</p>
+<p>
+  To do that, open the Settings (gnome-control-center) application, go to the
+  Search panel, and disable what you don't need.
+</p>
+<p>
+  It's possible to achieve the same with a <code>gsettings</code> command in the
+  terminal.
+</p>
+
+<h3>Last step</h3>
+<p>
+  Just log out and log in again, or reboot.
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Amtk – Actions, Menus and Toolbars Kit for GTK+ applications</title>
+  <id>https://wilmet-software.be/blog/2017-07-20-amtk-actions-menus-and-toolbars-kit-for-gtk-applications.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2017-07-20-amtk-actions-menus-and-toolbars-kit-for-gtk-applications.html" />
+  <published>2017-07-20T10:00:00Z</published>
+  <updated>2017-07-20T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  GtkUIManager has been deprecated without a good replacement for applications
+  that want to keep a traditional UI (with a menubar, toolbar and statusbar).
+  So I've written a new shared library called Amtk, currently developed inside
+  the
+  <a href="https://gitlab.gnome.org/World/gedit/libgedit-tepl" target="_blank">Tepl</a>
+  repository. It is a basic GtkUIManager replacement based on GAction. If you
+  are interested, read the
+  <a href="https://gedit-text-editor.org/developer-docs/libgedit-amtk-5/actions-menus-toolbars-intro.html" target="_blank">Amtk introduction</a>
+  (it explains the problems with what GTK+ currently provides and that Amtk
+  solves) and the
+  <a href="https://gedit-text-editor.org/developer-docs/libgedit-amtk-5/api-reference-actions-menus-toolbars.html" target="_blank">API reference</a>.
+</p>
+
+<p>
+  Note that the library is not yet finished, factory functions are missing,
+  <em>release early release often</em> etc. But I think that what remains to be
+  done is not a lot of work (for my needs at least).
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Using the GtkSourceView API to write scripts that manipulate text</title>
+  <id>https://wilmet-software.be/blog/2016-08-17-using-the-GtkSourceView-API-to-write-scripts-that-manipulate-text.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2016-08-17-using-the-GtkSourceView-API-to-write-scripts-that-manipulate-text.html" />
+  <published>2016-08-17T10:00:00Z</published>
+  <updated>2016-08-17T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  In the
+  <a href="https://gitlab.gnome.org/swilmet/gdev-c-utils" target="_blank">gnome-c-utils</a>
+  repository, I wrote some scripts that use the
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>
+  library.
+</p>
+
+<p>
+  When a script needs to read some text, search something in it, and possibly
+  edit the content, then having a GtkTextBuffer is really convenient.
+</p>
+
+<p>
+  GtkTextBuffer is good at navigating through text, with all the GtkTextIter
+  functions. The content can be edited easily. And the GtkSourceView library
+  adds interesting features like regex search &amp; replace and file loading
+  and saving with character encoding handling (GtkTextBuffer accepts only valid
+  UTF-8).
+</p>
+
+<p>
+  So, that's it. I just wanted to share that I find it convenient to write
+  scripts with GtkSourceView (but maybe because I speak the
+  GtkTextView/GtkSourceView API fluently).
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Semi-Object-Oriented Programming in C</title>
+  <id>https://wilmet-software.be/blog/2016-07-14-semi-object-oriented-programming-in-C.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2016-07-14-semi-object-oriented-programming-in-C.html" />
+  <published>2016-07-14T10:00:00Z</published>
+  <updated>2016-07-14T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Although
+  <a href="2015-05-22-an-introduction-about-writing-glib-gtk-applications-in-C.html" target="_blank">I said</a>
+  last year that I'm not the right person to write a book about developing
+  GLib/GTK+ applications and libraries, I continue slowly but surely.
+</p>
+
+<p>
+  There is now a new section called “Semi-Object-Oriented Programming in C”.
+  This serves as a nice warming up for GObject.
+</p>
+
+<p>
+  Download the PDF:
+</p>
+
+<p>
+  <a href="https://github.com/gdev-technology/glib-gtk-learning/releases" target="_blank">The GLib/GTK+ Development Platform</a> (version 0.5)
+</p>
+
+<p>
+  See also the
+  <a href="https://github.com/gdev-technology/glib-gtk-learning/blob/main/NEWS" target="_blank">NEWS</a>
+  file to know what changed since my last blog post on the subject.
+</p>
+
+<p>
+  Any comments or patches are welcome (the Git repo is
+  <a href="https://github.com/gdev-technology/glib-gtk-learning" target="_blank">here</a>).
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Thoughts on the Linux Mint X-Apps forks</title>
+  <id>https://wilmet-software.be/blog/2016-06-18-thoughts-on-the-linux-mint-x-apps-forks.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2016-06-18-thoughts-on-the-linux-mint-x-apps-forks.html" />
+  <published>2016-06-18T10:00:00Z</published>
+  <updated>2016-06-18T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  You may be aware that
+  <a href="https://lwn.net/Articles/689067/" target="_blank">Linux Mint has forked several GNOME applications</a>,
+  either directly from GNOME (Totem -&gt; Xplayer, Evince -&gt; Xreader,
+  Eye of GNOME -&gt; Xviewer), or indirectly via MATE
+  (gedit -&gt; pluma -&gt; XEd).
+</p>
+
+<p>
+  GNOME is like the Debian of the Linux desktops: it is forked a lot. But is it
+  a good thing? In the current state of the code, I don't think so and I'll
+  explain why, with a solution: creating more shared libraries.
+</p>
+
+<p>
+  At the end of the day, it's just a matter of design and usability concerns.
+  We can safely say that the main reason behind the forks is that the Linux
+  Mint developers don't like the new design of GNOME applications with a
+  <a href="https://docs.gtk.org/gtk4/class.HeaderBar.html" target="_blank">GtkHeaderBar</a>.
+</p>
+
+<p>
+  And there are perfectly valid reasons to <em>not</em> like headerbars. For
+  example, see the
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)NewDesignToDo.html" target="_blank">list of usability regressions for gedit</a>.
+</p>
+
+<p>
+  Currently the trend is GtkHeaderBar, but what will it be in 5 years, 10
+  years? Let's face it, GNOME is here just following the new trend that came
+  with smartphones and tablets.
+</p>
+
+<p>
+  So, a GNOME application developer needs to know that:
+</p>
+
+<ul>
+  <li>
+    A GUI is an ever-changing thing, exactly like the clothes that you bought
+    last year are already obsolete, right?
+  </li>
+
+  <li>
+    When the GUI changes too much, other developers don't like it and fork the
+    project.
+  </li>
+</ul>
+
+<p>
+  The four X-Apps forks account for roughly 200k lines of code. In the
+  short-term it works, Linux Mint has apps with a traditional UI. But hey,
+  porting the code to GTK+ 4 will be another beast, because the four X-Apps
+  still use the deprecated GtkUIManager and GtkAction APIs, among other things.
+</p>
+
+<p>
+  But when we look at the codebase, there are a lot of code that could be
+  shared between a GNOME app and its fork(s). So there <em>is</em> a solution:
+  creating more shared libraries. The shared libraries would contain the
+  backend code, of course, but also some basic blocks for the UI. The
+  application would just need to glue things up together, assembling objects,
+  binding GObject properties to GSettings, create the main GtkWindow and a few
+  other things.
+</p>
+
+<p>
+  The difference would be that instead of forking 200k lines of code, it would
+  be forking maybe 20k lines, which is more manageable to maintain in the long
+  run.
+</p>
+
+<p>
+  In the text editors case,
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)ReusableCode.html" target="_blank">making the gedit source code more re-usable</a>
+  is exactly what I've been doing for several years now, but for another reason:
+  being able to create easily specialized text editors or small IDEs.
+</p>
+
+<p>
+  Beside avoiding code duplication, creating a shared library has the nice side
+  effect that it is much better documented (usually), and with an API browser
+  like
+  <a href="https://github.com/gdev-technology/devhelp" target="_blank">Devhelp</a>,
+  it's a breeze to discover and understand a new codebase, it permits to have a
+  nice overview of the classes. It's of course possible to have such
+  documentation for application code, but in practice few developers do that,
+  although it would be a big step towards lowering the barrier to entry for
+  newcomers.
+</p>
+
+<p>
+  When untangling some code from an application and putting it in a shared
+  library, it is also easier to make the code unit testable (and unit tested!),
+  or at least write a mini interactive test in case of frontend code. Making
+  the code more stable, getting closer to bug-free code and thus more
+  successful software.
+</p>
+
+<p>
+  Developing a shared library doesn't necessarily mean to provide backward
+  compatibility during 10 years. Nothing prevents you from bumping the major
+  version of the library every 6 months if needed, making the new version
+  parallel-installable with the previous major versions. So that applications
+  are not forced to update the code when there is an API break.
+</p>
+
+<p>
+  But creating a library is more difficult, API design is hard. But in my
+  opinion it is worth it. GNOME is not only a desktop environment with an
+  application suite, it is also a development platform.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Doing things that scale</title>
+  <id>https://wilmet-software.be/blog/2016-04-23-doing-things-that-scale.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2016-04-23-doing-things-that-scale.html" />
+  <published>2016-04-23T10:00:00Z</published>
+  <updated>2016-04-23T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  In the software world, and with internet, we can do a lot of things that
+  scale.
+</p>
+
+<p>
+  Answering a user question on IRC doesn't scale, only one person and a few
+  lurkers will benefit from it. Answering a user question on a mailing list
+  scales a little better, since the answer is archived and can be searched for.
+  What really scales is instead to improve the reference manual. Yes, you know,
+  documentation. That way, normally the question will not surface again. You
+  have written the documentation once and N readers benefit from it, regardless
+  of N. It scales!
+</p>
+
+<p>
+  Another example. Writing an application versus writing a library. Writing an
+  application or end-user software already scales in the sense that the
+  programmer writes the code once, but it can be copied and installed N times
+  for almost the same cost as one time. Writing a library scales more, since it
+  can benefit N <em>programs</em>, and thus <code>N^2</code> users if we use
+  the asymptotic notation. It's no longer linear, it's quadratic! The
+  lower-level the library, the more it scales.
+</p>
+
+<p>
+  Providing your work under a free/<em>libre</em> license scales more, since it
+  can be re-distributed freely on the internet. There are some start-ups in the
+  world that reinvent the wheel by writing proprietary software and provide
+  technical support in their region only. By writing a free software instead,
+  other start-ups can pop up in other regions of the world, and will start
+  contributing to your codebase (if it's a copyleft license, that is). For the
+  human being advancement, free software is better since it more easily permits
+  to not reinvent the wheel. Provided that it's a high-quality software.
+</p>
+
+<p>
+  This can go on and on. You get the picture. But doing something that scales
+  is generally more difficult. It takes more time in the short-term, but in the
+  long-term everybody wins.
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Libtool convenience library to unit test private functions</title>
+  <id>https://wilmet-software.be/blog/2016-04-17-libtool-convenience-library-to-unit-test-private-functions.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2016-04-17-libtool-convenience-library-to-unit-test-private-functions.html" />
+  <published>2016-04-17T10:00:00Z</published>
+  <updated>2016-04-17T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Only the public API of a library is exported, so when a program is
+  dynamically linked to the
+  <a href="https://www.akkadia.org/drepper/dsohowto.pdf" target="_blank">DSO</a>
+  (Dynamic Shared Object), it can only use the public functions.
+</p>
+
+<p>
+  So how do you unit test the private classes of your library?
+</p>
+
+<p>
+  There is a simple solution, having a Libtool convenience library that
+  contains the whole code of the library, but without an <code>-export</code>
+  linker flag, so that all functions can still be accessed. You then link that
+  *.la file to your unit tests and also to the real library where you add the
+  appropriate <code>-export</code> flag.
+</p>
+
+<p>
+  You can see that in action in
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>
+  and
+  <a href="https://gitlab.gnome.org/GNOME/gspell" target="_blank">gspell</a>.
+  For example in gspell:
+</p>
+
+<ul>
+  <li>
+    <a href="https://gitlab.gnome.org/GNOME/gspell/-/blob/1.0.0/gspell/Makefile.am?ref_type=tags#L58" target="_blank">gspell/Makefile.am</a>
+  </li>
+
+  <li>
+    <a href="https://gitlab.gnome.org/GNOME/gspell/-/blob/1.0.0/testsuite/Makefile.am?ref_type=tags#L10" target="_blank">testsuite/Makefile.am</a>
+  </li>
+</ul>
+
+<p>
+  When you run <code>make</code> in verbose mode with <code>make V=1</code>,
+  you see that the libtool commands statically link the convenience static
+  library (a file with the *.a extension) into the unit test programs and into
+  the DSO.
+</p>
+
+<p>
+  That way the *.c files are compiled only once, and adding a unit test to the
+  <code>testsuite/Makefile.am</code> is straightforward.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>gspell news bis</title>
+  <id>https://wilmet-software.be/blog/2016-03-09-gspell-news-bis.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2016-03-09-gspell-news-bis.html" />
+  <published>2016-03-09T10:00:00Z</published>
+  <updated>2016-03-09T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Some more
+  <a href="https://gitlab.gnome.org/GNOME/gspell" target="_blank">gspell</a>
+  news (see the
+  <a href="2015-11-20-gspell-news.html" target="_blank">previous iteration</a>):
+</p>
+
+<ul>
+  <li>
+    gspell has been re-licensed from GPLv2+ to LGPLv2.1+.
+  </li>
+
+  <li>
+    gspell no longer depends on the libxml2 and GtkSourceView libraries.
+  </li>
+
+  <li>
+    gspell 1.0 will be released at the same time as GNOME 3.20 (in a few
+    weeks), with a stable API.
+  </li>
+
+  <li>
+    There has been several iterations on the API, making it easier to use. See
+    below.
+  </li>
+
+  <li>
+    In gedit 3.18 there was a regression: the current word being typed was
+    spell checked. Which is now fixed, because it was annoying to have a red
+    wavy underline appearing constantly while typing.
+  </li>
+
+  <li>
+    Words with apostrophes – like “doesn't” – are now supported!
+  </li>
+
+  <li>
+    And a testsuite has been written.
+  </li>
+</ul>
+
+<h3>API design</h3>
+
+<p>
+  See the
+  <a href="https://gedit-text-editor.org/developer-docs/gspell-1/" target="_blank">gspell API reference</a>.
+  There are two things worth mentioning that are generally useful when designing APIs.
+</p>
+
+<p>
+  First, a constraint has been directly translated into the API itself instead
+  of allowing an illogical combination in an application.
+</p>
+
+<p>
+  More specifically, for the same GtkTextBuffer, it doesn't make sense to use a
+  different GspellChecker between an inline checker and an “external” checker
+  (e.g. a dialog window). Since it's the same GtkTextBuffer, it should be the
+  same GspellChecker to share the session dictionary (when you click on
+  <em>Ignore All</em>, the word is added to the session dictionary). So instead
+  of having a spell-checker property on both the inline checker and the
+  external checker, now a GspellChecker must be attached to a GtkTextBuffer
+  with <code>gspell_text_buffer_set_spell_checker()</code>. That latter
+  function takes a GtkTextBuffer argument, there is no GspellTextBuffer
+  subclass since there is already one in the GtkSourceView library. That's
+  where <code>g_object_set_data()</code> becomes useful. And by attaching the
+  GspellChecker to the GtkTextBuffer, we no longer need to keep the
+  GspellChecker object around in the application code, we can get it with
+  <code>gspell_text_buffer_get_spell_checker()</code>.
+</p>
+
+<p>
+  The other thing worth mentioning is that at another place a class is more lax
+  and accepts a certain state instead of documenting “please check the value of
+  […]”. More precisely, GspellChecker now accepts a NULL language in the case
+  there are no dictionaries installed.
+</p>
+
+<p>
+  One of my goals when developing gspell is also to learn writing good APIs, so
+  if you see some possible improvements, don't hesitate! It's too late for the
+  1.x versions, but I can keep a bug around on bugzilla with the 2.0 target.
+  And of course, any other comments or testing are welcome.
+</p>
+
+<p>
+  Thanks to
+  <a href="https://blogs.gnome.org/pbor/" target="_blank">Paolo Borelli</a>
+  for the API review, and thanks to the numerous GNOME translators! gspell 1.0
+  will be rock solid!
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Task-oriented desktop and applications?</title>
+  <id>https://wilmet-software.be/blog/2015-11-22-task-oriented-desktop-and-applications.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2015-11-22-task-oriented-desktop-and-applications.html" />
+  <published>2015-11-22T10:00:00Z</published>
+  <updated>2015-11-22T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  I wanted to add a comment to Allan's blog post
+  <a href="https://blogs.gnome.org/aday/2015/11/12/the-next-big-thing/" target="_blank">The next big thing</a>,
+  but too late! comments are already closed (side note, I think it's a general
+  problem on blogs.gnome.org or it's a WordPress issue, or both).
+</p>
+
+<p>
+  So, at Flock 2014, Langdon White talked about “Fedora for Developers”
+  (<a href="https://www.youtube.com/watch?v=COAeCYSxEQk" target="_blank">video</a>),
+  with the following idea, among other things: Desktop integration with “tasks”
+  (with saved state).
+</p>
+
+<p>
+  It reminded me about
+  <a href="https://mail.gnome.org/archives/gedit-list/2011-January/msg00057.html" target="_blank">a discussion</a>
+  that I had with gedit developers back in 2011. We talked about
+  <em>profiles</em>: being able to create different gedit profiles, for example
+  one for the C language and one for Vala. Different gedit instances could be
+  launched with different profiles. They would behave as independent apps, with
+  different settings, different plugins activated, a different UI state, and so
+  on. Of course a profile could be created for each programming
+  <em>project</em>, or… <em>task</em>.
+</p>
+
+<p>
+  But a task often involves launching several applications. So to resume a
+  complete task quickly, in one step, it either needs some desktop integration,
+  or another “hub” application could be responsible to create tasks and resume
+  them. But either way it needs coordination with applications.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>gspell news</title>
+  <id>https://wilmet-software.be/blog/2015-11-20-gspell-news.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2015-11-20-gspell-news.html" />
+  <published>2015-11-20T10:00:00Z</published>
+  <updated>2015-11-20T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<ul>
+  <li>
+    <a href="https://gitlab.gnome.org/GNOME/gspell" target="_blank">gspell</a>
+    is now fully hosted on gnome.org!
+  </li>
+
+  <li>
+    There is now a
+    <a href="https://mail.gnome.org/archives/gspell-list/" target="_blank">mailing list</a>.
+  </li>
+
+  <li>
+    In addition to
+    <a href="https://gitlab.gnome.org/World/gedit/enter-tex" target="_blank">LaTeXila</a>,
+    gspell is now also used by
+    <a href="https://gedit-text-editor.org/" target="_blank">gedit</a>
+    (5,800 lines removed, yay!).
+  </li>
+
+  <li>
+    The 0.1.x version has branched and is meant to be installed alongside
+    GNOME 3.18.
+  </li>
+
+  <li>
+    If everything goes fine, the 1.0 version will be released at the same time
+    as GNOME 3.20, with a stable API.
+  </li>
+</ul>
+
+<p>
+  API reviews are more than welcome!
+</p>
+
+<p>
+  Stay tuned.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>GObject G_DECLARE macros considered harmful</title>
+  <id>https://wilmet-software.be/blog/2015-10-10-GObject-G_DECLARE-macros-considered-harmful.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2015-10-10-GObject-G_DECLARE-macros-considered-harmful.html" />
+  <published>2015-10-10T10:00:00Z</published>
+  <updated>2015-10-10T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  The GObject library version 2.44 introduced the
+  <code>G_DECLARE_DERIVABLE_TYPE()</code> and
+  <code>G_DECLARE_FINAL_TYPE()</code> macros.
+</p>
+
+<p>
+  Most GNOME developers see these macros as a good thing, to avoid some
+  boilerplate code.
+</p>
+
+<p>
+  I see these macros quite differently, and I avoid them because it creates more
+  problems than it solves.
+</p>
+
+<h3>Old convention</h3>
+
+<p>
+  <em>Without</em> the <code>G_DECLARE_*()</code> macros, the convention was to
+  always have a <code>priv</code> field in the object struct. To access a
+  private field, you write <code>self-&gt;priv-&gt;foo</code>, like this:
+</p>
+
+<pre>
+/* Old convention: have a 'priv' field in the object struct. */
+gint
+my_object_get_foo (MyObject *object)
+{
+  return object-&gt;priv-&gt;foo;
+}
+</pre>
+
+<h3>With G_DECLARE</h3>
+
+<p>
+  When using the <code>G_DECLARE_*()</code> macros, the above code becomes:
+</p>
+
+<pre>
+/* For a final type */
+gint
+my_object_get_foo (MyObject *object)
+{
+  return object-&gt;foo;
+}
+
+/* For a derivable type */
+gint
+my_object_get_foo (MyObject *object)
+{
+  MyObjectPrivate *priv = my_object_get_instance_private (object);
+
+  return priv-&gt;foo;
+}
+</pre>
+
+<p>
+  I see several problems with that approach:
+</p>
+
+<ol>
+  <li>
+    Porting a big project to the <code>G_DECLARE_*()</code> macros takes a
+    significant amount of time! There are currently no refactoring tools to do
+    it quickly.
+  </li>
+
+  <li>
+    Calling <code>my_object_get_instance_private()</code> in each function is
+    quite cumbersome…
+  </li>
+
+  <li>
+    Changing between a final and derivable type is - as you can see - also a lot
+    of mechanical work. So, <em>even for new classes</em>, I don't recommend
+    using these macros!
+  </li>
+</ol>
+
+<p>
+  So as a conclusion, I stick to the old way of implementing GObjects. There are
+  anyway some tools to generate the boilerplate, see for example
+  <a href="https://gitlab.gnome.org/swilmet/gdev-c-utils" target="_blank">gdev-c-utils</a>.
+</p>
+
+<p>
+  <strong>Edit:</strong> rewrote this blog post (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Introducing gspell, a new spell checking library</title>
+  <id>https://wilmet-software.be/blog/2015-09-16-introducing-gspell-a-new-spell-checking-library.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2015-09-16-introducing-gspell-a-new-spell-checking-library.html" />
+  <published>2015-09-16T10:00:00Z</published>
+  <updated>2015-09-16T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  As part of the
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex" target="_blank">LaTeXila</a>
+  project, I'm working on a new spell checking library called
+  <a href="https://gitlab.gnome.org/GNOME/gspell" target="_blank">gspell</a>.
+</p>
+
+<h3>Some background</h3>
+
+<p>
+  At first I wanted to contribute to
+  <a href="https://gtkspell.sourceforge.net/" target="_blank">GtkSpell</a>
+  so that GtkSpell and
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>
+  work well together, without a dependency on each other. GtkSourceView defines
+  a no-spell-check region. For LaTeX, the region includes the LaTeX command's
+  names, for example. But GtkSpell didn't read that region, and the region was
+  available only through the GtkSourceView API. Adding a dependency on
+  GtkSourceView in GtkSpell was not desirable, because many applications use
+  GtkSpell only. Also, a library like GtkSpell could potentially add the
+  support for GtkEntry too, so if there is a dependency on GtkSourceView, it
+  isn't nice for an application that wants only the spell checking for a
+  GtkEntry. The solution was actually really simple: the no-spell-check region
+  is a GtkTextTag. After setting a name to the tag and expose it in the API, it
+  was possible for GtkSpell to lookup the tag and read the region.
+</p>
+
+<p>
+  So the patches for GtkSourceView and GtkSpell have been merged, to remark
+  only later that there was a quite annoying text responsiveness problem on
+  long lines (e.g. a wrapped line that takes 5 lines on the screen). And… there
+  was exactly the same problem with the
+  <a href="https://gedit-text-editor.org/" target="_blank">gedit</a>
+  spell plugin. The typed text appeared with a noticeable delay. Fixing that
+  problem was more complicated. The text needs to be spell checked after a
+  timeout. But adding a timeout function means that the remaining region to
+  spell check needs to be tracked, which was not the case, neither in GtkSpell
+  nor in gedit. And another problem is that GtkSpell anyway needed some code
+  clean-ups. On the other hand the gedit code was in a slightly better shape
+  and, more importantly, it had more features. For example gedit has a dialog
+  window to spell check an entire document, one (misspelled) word at a time,
+  whereas GtkSpell only has an “in-line” checker. An in-line checker is not
+  convenient in the case of a very long document with very few misspelled
+  words, in that case the dialog window is more convenient (BTW it could also
+  be an horizontal bar above or below the text, to not occlude the text by the
+  dialog window).
+</p>
+
+<p>
+  So, since the gedit spell plugin's code had more features, I've decided to
+  improve that code base instead. The gedit plugin code also needed some code
+  clean-ups, but at least the code architecture was for the most part good.
+  After those code refactorings and bug fixes, it was easier to fix the
+  responsiveness problem. Then, after some more “spell shaking” (haha) the code
+  was re-usable for other text editors.
+</p>
+
+<h3>Enters gspell</h3>
+
+<p>
+  The gedit spell plugin's code has then been copied into its own repository,
+  called <em>gspell</em>. The library is still under construction, but I hope
+  to get a first version available when GNOME 3.18.0 is released (September 21,
+  according to
+  <a href="https://wiki.gnome.org/ThreePointSeventeen" target="_blank">the schedule</a>).
+  That first version will <em>not</em> have a guaranteed stable API, be warned!
+  It is currently available on my GitHub account, but if things go well, I'll
+  ask during the next development cycle to get it hosted on
+  <a href="https://www.gnome.org/" target="_blank">gnome.org</a>!
+</p>
+
+<p>
+  <strong>Update:</strong> gspell is now hosted on gnome.org, the links above
+  have been updated.
+</p>
+
+<h3>What it means for LaTeXila</h3>
+
+<p>
+  Basically, the LaTeX command's names won't be highlighted anymore with a red
+  wavy underline. And there will be a dialog window to spell check an entire
+  file. Also, on the LaTeXila side, settings will be stored on a file-by-file
+  basis (to remember the language and whether the in-line checker is
+  activated), and there will be settings in the preferences dialog for the
+  default configuration.
+</p>
+
+<p>
+  I already have a branch in LaTeXila that uses gspell, and it works pretty
+  well. There is still a bit of work to do, but it should be ready soon. Since
+  it would be a pity to not have it for LaTeXila 3.18, I'll delay the release
+  of LaTeXila 3.18.0 for a few weeks to let translators have the time to update
+  the translations.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>An introduction about writing GLib/GTK+ applications in C</title>
+  <id>https://wilmet-software.be/blog/2015-05-22-an-introduction-about-writing-glib-gtk-applications-in-C.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2015-05-22-an-introduction-about-writing-glib-gtk-applications-in-C.html" />
+  <published>2015-05-22T10:00:00Z</published>
+  <updated>2015-05-22T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  GNOME lacks a good and recent book about writing applications and libraries.
+  I was motivated, some months ago, to write such a book. But this motivation
+  has dissipated somehow, I don't think I'm the right person.
+</p>
+
+<p>
+  Anyway, here is my attempt:
+</p>
+
+<p>
+  <a href="https://github.com/gdev-technology/glib-gtk-learning" target="_blank">The GLib/GTK+ Development Platform</a>
+  (version 0.2)
+</p>
+
+<p>
+  It contains an introduction to GLib, which is mostly an updated version of
+  the corresponding chapter in
+  <a href="https://gitlab.gnome.org/Archive/ggad" target="_blank">GTK+/Gnome Application Development</a>,
+  written by Havoc Pennington (with his permission).
+</p>
+
+<p>
+  Even if the document is short, I think it can already be an interesting read.
+  With the hope that the content can be reused for a real book in the future…
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Thoughts on live previews in LaTeXila</title>
+  <id>https://wilmet-software.be/blog/2015-01-10-thoughts-on-live-previews-in-LaTeXila.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2015-01-10-thoughts-on-live-previews-in-LaTeXila.html" />
+  <published>2015-01-10T10:00:00Z</published>
+  <updated>2015-01-10T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Several years ago I talked about
+  <a href="2012-08-19-some-principles-for-the-user-experience-of-a-latex-editor.html" target="_blank">some principles for the user experience</a>
+  of
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex" target="_blank">LaTeXila</a>,
+  a GTK+ LaTeX editor for GNU/Linux. The conclusion:
+</p>
+<blockquote>
+  <q>The idea of LaTeXila is to always deal directly with the LaTeX code, while
+  simplifying as most as possible the writing of this LaTeX code. The users
+  don't need to be LaTeX gurus, but they should understand what happens.</q>
+</blockquote>
+
+<p>
+  In my opinion this better follows the LaTeX philosophy than programs like
+  <a href="https://www.lyx.org/" target="_blank">LyX</a>.
+  By writing directly the LaTeX markup, you have full control of your document.
+  The idea of LaTeX is to concentrate on the content and the structure of the
+  document, not its layout.
+</p>
+
+<p>
+  With a live preview, you see constantly the layout… so you're less
+  concentrated on the content. As soon as something is wrong in the layout,
+  you'll want to fix it. This can lead to bad practices, like proceeding by
+  trials and errors until the layout is good. LaTeXila tries to avoid that. As
+  in programming, you should understand what you've written before the
+  compilation or execution. You must be certain that the code is correct; if
+  you have any doubts, the best is to read the documentation, this will save
+  you time when you'll use the same commands in the future.
+</p>
+
+<p>
+  Moreover, layout polishing should be done when the content is finished. For
+  instance, it can sometimes happen that a word exceeds the margin, because
+  LaTeX doesn't know where to place an hyphen to split that word. It is useless
+  to fix this issue when the content isn't finalized, because if you add or
+  remove some words in the sentence, the problem will maybe be fixed by itself.
+</p>
+
+<p>
+  Instead of a live preview, the workflow in LaTeXila is to compile from time
+  to time the document (e.g. when you've finished a section) to re-read your
+  text and check that the result is what you expected. A handy feature in that
+  context is the forward and backward search between LaTeXila and
+  <a href="https://gitlab.gnome.org/GNOME/evince" target="_blank">Evince</a>,
+  to switch between the *.tex file(s) and the PDF at the corresponding
+  positions, with a simple Ctrl+click.
+</p>
+
+<p>
+  But there are some special cases where a live preview can be useful, i.e.
+  when more source <code>&lt;-&gt;</code> result cycles are required:
+</p>
+<ul>
+  <li>
+    A
+    <a href="https://en.wikipedia.org/wiki/PGF/TikZ" target="_blank">PGF/TikZ</a>
+    <a href="https://bugzilla.gnome.org/show_bug.cgi?id=722910" target="_blank">figure preview</a>,
+    because in that case the layout is more important.
+  </li>
+  <li>
+    When we do something difficult, like writing a long and tricky math
+    equation. But when it becomes difficult to find our way in the code, an
+    alternative is to improve its readability, by spacing it out, adding
+    comments to separate the sections, etc.
+  </li>
+</ul>
+
+<p>
+  If you have other specific use cases where a live preview is really useful, I
+  would be interested to hear them. I don't think “learning LaTeX” requires a
+  live preview, as explained above this can result in bad practices.
+</p>
+
+<p>
+  So I think a live preview might be useful for editing <em>one</em> paragraph.
+  A live preview of the whole document is probably less useful. In any case, a
+  live preview should be enabled only temporarily. In LaTeXila we can imagine
+  doing a right click on a paragraph or TikZ figure, select the live preview in
+  the context menu and we enter in a mode where only that paragraph (or
+  selection) is visible, with the live preview on top/right/directly injected
+  in your brain/whatever. Then when the writing of the tricky paragraph is
+  finished, we return to the normal mode with the whole source content.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Object-oriented design best practices</title>
+  <id>https://wilmet-software.be/blog/2014-08-27-object-oriented-design-best-practices.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2014-08-27-object-oriented-design-best-practices.html" />
+  <published>2014-08-27T10:00:00Z</published>
+  <updated>2014-08-27T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Here is another book review, this time about object-oriented design.
+</p>
+
+<h3>Programming Best Practices</h3>
+
+<p>
+  We can learn by our own experience, we can use our common sense, we can learn
+  by more experienced developers when contributing to an existing project. But
+  to speed things up, reading a good old book is also a good idea.
+</p>
+
+<p>
+  For programming in general, not specifically for object-oriented design, see
+  my blog post
+  <a href="2012-08-01-about-code-quality-and-maintainability.html" target="_blank">About code quality and maintainability</a>.
+</p>
+
+<h3>Object-Oriented Design Heuristics</h3>
+
+<p>
+  For OO design, the well-known
+  <a href="https://www.pearson.com/en-gb/subject-catalog/p/design-patterns-elements-of-reusable-object-oriented-software/P200000009480/9780201633610" target="_blank">Design Patterns</a>
+  (by Gamma, Helm, Johnson and Vlissides)
+  book is often advised. But most of the design patterns are not often applied,
+  or are useful only for big applications and frameworks. How often do you
+  <em>create</em> an
+  <a href="https://en.wikipedia.org/wiki/Abstract_factory_pattern" target="_blank">Abstract Factory</a>
+  or a
+  <a href="https://en.wikipedia.org/wiki/Facade_pattern" target="_blank">Façade</a>?
+</p>
+
+<p>
+  On the other hand, the book
+  <a href="https://www.oreilly.com/library/view/object-oriented-design-heuristics/020163385X/" target="_blank">Object-Oriented Design Heuristics</a>
+  (by Arthur Riel)
+  discusses in details more than 60 guidelines
+  - or heuristics - that can be applied to all projects, even for a small
+  codebase with three classes.
+</p>
+
+<p>
+  Example of an heuristic:
+</p>
+<blockquote>
+  <q>Keep related data and behavior in one place.</q>
+</blockquote>
+
+<p>
+  If a getter method is present in a class, why is the data used outside the
+  class? The behavior implemented outside the class can maybe be implemented
+  directly in the class, so the getter can be replaced by a higher-level
+  method.
+</p>
+
+<p>
+  Other example:
+</p>
+<blockquote>
+  <q>Distribute system intelligence horizontally as uniformly as possible, that
+  is, the top-level classes in a design should share the work uniformly.</q>
+</blockquote>
+
+<p>
+  By following this heuristic, god classes should be avoided. An example of a
+  class that can be split in two is where some methods use only attributes A
+  and B, while some other methods use only attributes C and D. In other words,
+  if a class has non-communicating behavior, that is, methods that operate on a
+  proper subset of the data members of the class, then the class can be split.
+</p>
+
+<p>
+  All the heuristics can not be followed all the time. That's why they are
+  called “heuristics”. But when an heuristic is violated, there should be good
+  reasons behind that decision, and the developer should know what he or she is
+  doing.
+</p>
+
+<h3>Event-driven programming</h3>
+
+<p>
+  One missing concept in the book is event-driven programming.
+</p>
+
+<p>
+  With GObject, we are lucky to have a powerful signal system. It is a great
+  way to decouple classes. When an object sends a signal, the class doesn't
+  know who receive it.
+</p>
+
+<h3>Conclusion</h3>
+
+<p>
+  Programming best practices are useful to maintain a good code quality.
+  <em>Object-Oriented Design Heuristics</em>
+  will give you the knowledge to better write object-oriented code, either for
+  small projects, big projects or API design in a library.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>File loading and saving in GtkSourceView, finally</title>
+  <id>https://wilmet-software.be/blog/2014-07-09-file-loading-and-saving-in-gtksourceview.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2014-07-09-file-loading-and-saving-in-gtksourceview.html" />
+  <published>2014-07-09T10:00:00Z</published>
+  <updated>2014-07-09T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Last year
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>
+  saw a new
+  <a href="https://wilmet-software.be/blog/2013-08-19-regex-search-in-gedit-and-gtksourceview-finally.html" target="_blank">search and replace API</a>.
+  This year it's the file loading and saving that has just landed! It is in the
+  continuity of
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)ReusableCode.html" target="_blank">making the gedit source code more reusable</a>
+  for other text editors.
+</p>
+
+<p>
+  In short, the back-end part of the file loading and saving in
+  <a href="https://gedit-text-editor.org/" target="_blank">gedit</a>
+  has been moved to GtkSourceView, with a new and more flexible API to better
+  wrap the feature. The code has been modified to follow GIO conventions for
+  asynchronous operations, to use GTask internally, and replace the uses of
+  GSettings by properties, among other things.
+</p>
+
+<p>
+  The file loader auto-detects encodings, newline types and compression type
+  (yes gedit can open gzip files). Invalid characters can also be displayed
+  with their corresponding hexadecimal value, because GtkTextBuffer accepts
+  only valid UTF-8 text. And progress information is reported during the
+  operation.
+</p>
+
+<p>
+  The API is stateful: the file parameters (encoding etc) are remembered
+  between a file loading and a file saving in a GtkSourceFile object.
+  Unfortunately the new API is still quite low-level. The application must
+  configure the file loader and the file saver, and some errors are returned to
+  the application.
+</p>
+
+<p>
+  So the front-end and errors handling is still implemented in gedit. Errors
+  and progress information are displayed in an info bar, above the
+  GtkSourceView widget. For some errors, gedit proposes different actions to
+  the user, like choosing another encoding.
+</p>
+
+<h3>API design</h3>
+
+<p>
+  If you are a text editor developer, don't hesitate to have a look at the
+  <a href="https://gedit-text-editor.org/developer-docs/libgedit-gtksourceview-300/file-loading-and-saving.html" target="_blank">GtkSourceFile API</a>.
+  The API can still change during this 3.13 development cycle. The notes about
+  the API design are available
+  <a href="https://bugzilla.gnome.org/show_bug.cgi?id=721016" target="_blank">on bugzilla</a>
+  (there has been four iterations). Here is a summary.
+</p>
+
+<p>
+  The API is a bit heavy, with the following classes: GtkSourceEncoding,
+  GtkSourceFile, GtkSourceFileLoader and GtkSourceFileSaver. There are good
+  reasons for having two class' names derived from a verb ("to load" and "to
+  save"), which is generally a hint that those classes should be replaced by a
+  method (i.e. an action). The reasons are partly similar with the new
+  <a href="https://docs.gtk.org/gio/class.SubprocessLauncher.html" target="_blank">GSubprocessLauncher</a>
+  in GIO: the FileLoader and FileSaver classes are there not only for launching
+  the operation, but also for configuring it with a nicer and more extensible
+  API than one function with a dozen parameters. With the FileLoader and
+  FileSaver, we can add properties, functions and even signals. And the
+  FileLoader and FileSaver classes are quite useful in gedit: when an error
+  occurs and the user clicks on a button in the info bar, the loader or saver
+  object is reconfigured and the operation is relaunched, without the need to
+  keep the initial configuration around. Also, the FileLoader or FileSaver
+  properties are applied to the GtkSourceFile object only on a successful
+  operation, so the GtkSourceFile state is (normally) consistent with the
+  underlying file on the disk, at least at the time of the last load or save
+  operation done with GtkSourceView.
+</p>
+
+<h3>Possible follow-ups work</h3>
+
+<p>
+  A possible follow-up is to make the front-end code more reusable, either by
+  creating higher-level classes in GtkSourceView, or by creating a git
+  submodule, like the
+  <a href="https://gitlab.gnome.org/GNOME/libgd" target="_blank">libgd</a>
+  (without API stability guarantees in the latter case).
+</p>
+
+<p>
+  Another possible follow-up is to analyze and improve the performances, which
+  are currently quite bad. For short files it is not visible of course, but
+  opening a very big log file takes more time than with other popular text
+  editors.
+</p>
+
+<p>
+  There are other possible improvements, like unescaping invalid characters
+  when saving, or avoid blocking the GtkTextBuffer when (auto-)saving a short
+  remote file on a slow network connection.
+</p>
+
+<h3>Changes for gedit plugins</h3>
+
+<p>
+  Unfortunately there are some changes in the gedit API for plugins, mainly in
+  GeditDocument. Fortunately the changes are
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)Old_API_Changes.html" target="_blank">well documented</a>,
+  and most plugins should still work without any modification.
+</p>
+
+<h3>Conclusion</h3>
+
+<p>
+  The file loading and saving can quickly become a fairly complex beast. Now
+  this code is available for other GTK+ text editors.
+</p>
+
+<p>
+  Thanks to
+  <a href="http://blogs.gnome.org/pbor/" target="_blank">Paolo Borelli</a>
+  for the reviews!
+</p>
+
+<p>
+  TL;DR:
+</p>
+<ul>
+  <li>In GtkSourceView: 29 files changed, 7909 insertions(+), 3 deletions(-)</li>
+  <li>In gedit: 49 files changed, 1888 insertions(+), 8819 deletions(-)</li>
+  <li>In gedit-plugins: 11 files changed, 22 insertions(+), 31 deletions(-)</li>
+</ul>
+
+<p>
+  This is a 12% code increase in GtkSourceView, and a 6% code decrease in
+  gedit.
+</p>
+
+<p>
+  PS: As usual, some tests would be more than welcome before the stable version
+  in September.
+</p>
+
+<p>
+  <strong>Edit:</strong> update most of the links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Making the gedit source code more reusable</title>
+  <id>https://wilmet-software.be/blog/2014-05-20-making-the-gedit-source-code-more-reusable.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2014-05-20-making-the-gedit-source-code-more-reusable.html" />
+  <published>2014-05-20T10:00:00Z</published>
+  <updated>2014-05-20T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  On IRC I see some developers working on other text editors based on
+  <a href="https://docs.gtk.org/gtk4/section-text-widget.html" target="_blank">GtkTextView</a>/<a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>.
+  It is a good thing in my opinion to have specialized text editors. They are
+  easier to use and configure. A specialized application has a potentially
+  better usability. A general-purpose text editor like
+  <a href="https://gedit-text-editor.org/" target="_blank">gedit</a>
+  is of course still needed for languages not covered by a specialized text
+  editor or IDE.
+</p>
+
+<p>
+  The problem is that creating a new text editor based on GtkSourceView is
+  still quite a lot of work. Instead of reinventing the wheel, the idea is to
+  make the gedit source code more reusable by moving it to GtkSourceView or to
+  a git submodule.
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)ReusableCode.html" target="_blank">This wiki page</a>
+  has all the details, it keeps track of the progress made (see also the
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)OldRoadMap.html" target="_blank">RoadMap</a>),
+  more details on the "why?", and a paragraph on
+  <a href="https://gitlab.gnome.org/Archive/anjuta" target="_blank">Anjuta</a>.
+</p>
+
+<p>
+  This blog post was to make developers aware of this initiative. If you are
+  interested, join us on the #gedit channel or the
+  <a href="https://mail.gnome.org/archives/gedit-list/" target="_blank">mailing list</a>!
+</p>
+
+<p>
+  <strong>Edit:</strong> update all the links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>{specialized, general-purpose} x {text editors, IDEs}</title>
+  <id>https://wilmet-software.be/blog/2014-02-11-specialized-general-purpose-text-editors-ides.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2014-02-11-specialized-general-purpose-text-editors-ides.html" />
+  <published>2014-02-11T10:00:00Z</published>
+  <updated>2014-02-11T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Some thoughts about text editors, IDEs, specialized or general-purpose
+  applications.
+</p>
+
+<table>
+<tr>
+  <td></td>
+  <td>Several languages</td>
+  <td>Other tasks</td>
+  <td>Plugins</td>
+</tr>
+<tr>
+  <td>Specialized text editor</td>
+  <td>No</td>
+  <td>No</td>
+  <td>?</td>
+</tr>
+<tr>
+  <td>General-purpose text editor</td>
+  <td>Yes</td>
+  <td>No</td>
+  <td>Yes</td>
+</tr>
+<tr>
+  <td>Specialized IDE</td>
+  <td>No</td>
+  <td>Yes</td>
+  <td>?</td>
+</tr>
+<tr>
+  <td>General-purpose IDE</td>
+  <td>Yes</td>
+  <td>Yes</td>
+  <td>Yes</td>
+</tr>
+</table>
+
+<p>
+  The above table summarizes how I view the text editors and IDEs field.
+</p>
+
+<h3>Several languages</h3>
+
+<p>
+  A specialized application focus only on one programming language, or several
+  languages used together. A general-purpose application can support completely
+  different programming languages and platforms.
+</p>
+
+<h3>Other tasks</h3>
+
+<p>
+  A text editor focus only on editing text or source code, while simplifying as
+  most as possible the writing of this code. An IDE integrates other features
+  like building the source code, running it, writing commits, integrate a
+  debugger, and so forth.
+</p>
+
+<h3>Plugins</h3>
+
+<p>
+  For obvious reasons, a general-purpose application should have a plugin
+  system. For a specialized application, the need for plugins is less obvious.
+</p>
+
+<h3>Two extremes</h3>
+
+<p>
+  The general-purpose IDE with plugins is one extreme. The user interface must
+  be generic enough to suit plugins and different programming languages. And it
+  takes more time to learn and configure the application.
+</p>
+
+<p>
+  The specialized text editor without plugins is the other extreme. Its
+  developer has full control on the user interface, so the application has a
+  potentially better usability. Users of the application require less time to
+  learn and configure it. Ideally, it should Just Work.
+</p>
+
+<h3>Not reinventing the wheel for specialized applications</h3>
+
+<p>
+  Write libraries for the common features! Or at least ensure that your code is
+  reusable. This is not limited to text editors and IDEs, I'm sure you can
+  apply the same principles on your favorite field.
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Search and replace behavior for a text editor</title>
+  <id>https://wilmet-software.be/blog/2013-12-08-search-and-replace-behavior-for-a-text-editor.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2013-12-08-search-and-replace-behavior-for-a-text-editor.html" />
+  <published>2013-12-08T10:00:00Z</published>
+  <updated>2013-12-08T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  The search and replace is one of those features that have a wide variety of
+  different implementations and behaviors across applications. The nice thing
+  with my work I did this summer on
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>,
+  is that you can build whatever behavior you want by using
+  <a href="https://developer.gnome.org/gtksourceview/unstable/GtkSourceSearchContext.html">the new search and replace API</a>.
+  And that's exactly what I did for
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex">LaTeXila</a>,
+  which has a new behavior for the replace button.
+</p>
+
+<p>
+  <em>Screenshot of the search and replace in LaTeXila</em> (image lost)
+</p>
+
+<p>
+  When we replace an occurrence, we generally have the time and we don't have a
+  train to take (or we are already in the train). And it's better to see how
+  the content looks like with the replacement text, to see if everything is
+  fine and make adjustments if required. As a consequence, when you click on
+  the replace button, it just replaces the search match without moving to the
+  next occurrence (which can be far away, so we would not be able to see the
+  replaced text).
+</p>
+
+<p>
+  When you have just replaced an occurrence, no text is selected. If you click
+  a second time on the replace button, it goes to the next occurrence, and
+  selects it, to repeat the process. Nice, isn't it?
+</p>
+
+<p>
+  Voilà, that's all, I just wanted to share this information. It can be
+  interesting for other applications.
+</p>
+
+<p>
+  <strong>Edit:</strong> update some links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>The GSoC on GtkSourceView/gedit comes to an end</title>
+  <id>https://wilmet-software.be/blog/2013-09-21-the-gsoc-on-gtksourceview-gedit-comes-to-an-end.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2013-09-21-the-gsoc-on-gtksourceview-gedit-comes-to-an-end.html" />
+  <published>2013-09-21T10:00:00Z</published>
+  <updated>2013-09-21T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  A small update on my GSoC.
+</p>
+
+<p>
+  The first part took a little longer than expected. But I'm happy with the
+  results, the search and replace API is simple and flexible, there were not a
+  lot of bugs to fix, and gedit users will be happy with the improvements
+  (including
+  <a href="2013-08-19-regex-search-in-gedit-and-gtksourceview-finally.html">the regex search</a>).
+</p>
+
+<p>
+  I've changed a little what was initially planned for the second part of the
+  GSoC. Ideally, it was to rework the color schemes to use CSS, and investigate
+  GtkTextTag to modernize it. For the color schemes, it was not really a
+  high-priority issue for
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview">GtkSourceView</a>,
+  writing them in XML works fine. And the GtkTextTag investigation would have
+  been the logical follow-up. But with the remaining time, I have found other
+  interesting and smaller tasks instead.
+</p>
+
+<p>
+  The past few weeks I worked on various things in other parts of GtkSourceView
+  and gedit: better document the API, fix some bugs, improve the code here and
+  there, and investigate two longer projects: the code folding and making the
+  gedit source code more reusable.
+</p>
+
+<p>
+  I've written a
+  <a href="https://bugzilla.gnome.org/show_bug.cgi?id=707703">utility class</a>
+  to navigate quickly through a set of GtkTextMarks. It is a cleaner
+  implementation of GtkSourceMarks, and it will be useful for the code folding.
+</p>
+
+<h3>Making the gedit source code more reusable</h3>
+
+<p>
+  For making the gedit source code more reusable, I've created a git submodule
+  called
+  <a href="https://github.com/swilmet/libgedit">libgedit</a>.
+  Like the
+  <a href="https://gitlab.gnome.org/GNOME/libgd">libgd</a>,
+  the API/ABI stability is not guaranteed. The purpose is to try to move as
+  most code as possible in the libgedit, iterate the API if needed until it is
+  good enough to be included in GtkSourceView. So the libgedit would be a
+  staging area between gedit and GtkSourceView. There is a problem though:
+  gedit has an API for its plugins. And if possible, it's better to not break
+  the plugins… If the code moves from gedit to the libgedit, and then from the
+  libgedit to GtkSourceView, there can be several API breaks. On the other
+  hand, if the code goes directly in GtkSourceView, there is at most one API
+  break (that can be avoided if the gedit functions are simply deprecated, not
+  removed). With the second solution, the risk is to discover problems too
+  late.
+</p>
+
+<p>
+  Maintaining the gedit plugins API in the libgedit is one problem. There are
+  other problems: it would be nice to share the translations; have an API
+  documentation only for the libgedit (with GTK-Doc, I mean); working with a
+  git submodule is less convenient; having the same namespace ("Gedit") for
+  gedit and libgedit is a problem when trying to make the code more reusable; a
+  headers nightmare, some headers are private, others are public, and others
+  are split between gedit and libgedit; and so on.
+</p>
+
+<p>
+  So I think it will be simpler to move the code directly to GtkSourceView. The
+  API must be well thought. The developers must have enough time during the
+  6-months development cycle to iterate the API if needed. And ideally the API
+  must be tested on other applications than gedit. If it is done slowly but
+  surely, by small steps every cycle, it should be doable.
+</p>
+
+<p>
+  That's all folks. Thanks to
+  <a href="http://blogs.gnome.org/nacho/">Ignacio Casal Quinteiro</a> (nacho)
+  and
+  <a href="http://blogs.gnome.org/pbor/">Paolo Borelli</a> (pbor)
+  for their reviews, advices and (sometimes late ;-) ) testing. Thanks to
+  Garrett Regier (gregier) for having well tested the new search and replace in
+  gedit. And thanks to Google and GNOME, for accepting me as a GSoC student.
+</p>
+
+<p>
+  <strong>Edit:</strong> update some links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Regex search in gedit and GtkSourceView, finally</title>
+  <id>https://wilmet-software.be/blog/2013-08-19-regex-search-in-gedit-and-gtksourceview-finally.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2013-08-19-regex-search-in-gedit-and-gtksourceview-finally.html" />
+  <published>2013-08-19T10:00:00Z</published>
+  <updated>2013-08-19T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  <em>Screenshot of regex search in gedit</em> (image lost)
+</p>
+
+<p>
+  Although regular expression searches were possible with plugins, it is now
+  available by default in gedit. The search and replace works too, and you can
+  use backreferences (<code>\0</code>, <code>\1</code>, …) in the replacement
+  text.
+</p>
+
+<p>
+  All this work has been merged upstream, just in time before the freeze.
+</p>
+
+<h3>Reworked search and replace API in GtkSourceView</h3>
+
+<p>
+  Behind the scene, the regex search is implemented in GtkSourceView. For most
+  cases, it scales well for big text buffers, since multi-segment matching is
+  done: when a partial match is returned, we take a bigger segment. Read the
+  <a href="https://git.gnome.org/browse/gtksourceview/tree/gtksourceview/gtksourcesearchcontext.c">lengthy implementation overview</a>
+  at the top of <code>gtksourcesearchcontext.c</code> for more details.
+</p>
+
+<p>
+  Besides the regex search, the API is now more flexible. Roughly speaking, it
+  was initially a one-to-one relationship: only one search was possible at a
+  time in a text buffer. It is now a many-to-many relationship: several
+  searches can execute at the same time in the same text buffer (it can be
+  useful for non-highlighted, background searches). And the search settings can
+  be shared between several buffers.
+</p>
+
+<p>
+  Next step for my GSoC: rework the GtkSourceView style schemes to use CSS.
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Aligning parameters of a C function declaration, with lineup-parameters</title>
+  <id>https://wilmet-software.be/blog/2013-07-25-aligning-parameters-of-a-c-function-declaration-with-lineup-parameters.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2013-07-25-aligning-parameters-of-a-c-function-declaration-with-lineup-parameters.html" />
+  <published>2013-07-25T10:00:00Z</published>
+  <updated>2013-07-25T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Renaming a GObject class can involve a lot of manual work. Once the type is
+  renamed, the parameters of the function declarations are no longer aligned.
+  In the following example, GtkSourceSearch has been renamed to
+  GtkSourceSearchContext:
+</p>
+
+<pre>
+guint
+_gtk_source_search_replace_all (GtkSourceSearchContext *search,
+                                const gchar     *replace,
+                                gint             replace_length)
+{
+        /* ... */
+}
+</pre>
+
+<p>
+  It is a GNOME convention to align the parameters, so the code must be fixed:
+</p>
+
+<pre>
+ guint
+ _gtk_source_search_replace_all (GtkSourceSearchContext *search,
+                                 const gchar            *replace,
+                                 gint                    replace_length)
+{
+        /* ... */
+}
+</pre>
+
+<p>
+  As programmers, we don't like doing such a manual work, and even less when we
+  are renaming a big class. Unfortunately, the
+  <a href="https://www.gnu.org/software/indent/">Indent</a>
+  program doesn't have an option for that. If you use Vim, there is the
+  <a href="http://www.vim.org/scripts/script.php?script_id=294">Align plugin</a>,
+  that have the <code>\afnc</code> alignment mapping. But it doesn't align the
+  parameters on the parenthesis.
+</p>
+
+<p>
+  So I wrote a script! The result is in my
+  <a href="https://gitlab.gnome.org/swilmet/gdev-c-utils">gnome-c-utils repository</a>
+  (containing only the lineup-parameters script for the moment).
+</p>
+
+<p>
+  To detect the parameters, a few regular expressions are used. There are quite
+  a lot of restrictions, but it should work for most GNOME software. To have a
+  perfect script, libclang could be used, but I've never used it, so regular
+  expressions was a quicker solution.
+</p>
+
+<p>
+  The script can be used to convert an entire file, or can be used from a text
+  editor (stdin is read, and the output is written to stdout). I've documented
+  how to add a key binding in Vim. So by pressing a single key, the parameters
+  are correctly aligned!
+</p>
+
+<p>
+  This is just a small step to improve the developer experience in GNOME. But I
+  hope this will be useful for other developers. I dream of a GNOME C IDE that
+  handles the boilerplate (for renaming classes too), that aligns the
+  parameters and the function prototypes in the headers, with auto-completion
+  for signals and properties names, and so on.
+</p>
+
+<p>
+  <strong>Edit:</strong> update the links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Search and replace in gedit and GtkSourceView</title>
+  <id>https://wilmet-software.be/blog/2013-07-15-search-and-replace-in-gedit-and-gtksourceview.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2013-07-15-search-and-replace-in-gedit-and-gtksourceview.html" />
+  <published>2013-07-15T10:00:00Z</published>
+  <updated>2013-07-15T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  My GSoC on GtkSourceView/gedit/… is coming along nicely. Here is a screenshot
+  of the new search in gedit:
+</p>
+
+<p>
+  <em>New gedit search</em> (screenshot lost)
+</p>
+
+<p>
+  The visible new thing is the "298 of 703" in the search entry, that shows the
+  position of the current search match, and the total number of occurrences.
+  This is just the tip of the iceberg, as much of the work has been done under
+  the hood.
+  <a href="http://blogs.gnome.org/nacho/">Ignacio</a> (nacho),
+  my mentor, has improved GdTaggedEntry, and I worked on the new API in
+  GtkSourceView, and adapted gedit to use the new API.
+</p>
+
+<p>
+  Note: almost all my work has already been merged upstream, but not the new
+  search entry.
+</p>
+
+<h3>Search and replace API in GtkSourceView</h3>
+
+<p>
+  The new API in GtkSourceView
+  <a href="https://developer.gnome.org/gtksourceview/unstable/GtkSourceBuffer.html">is available</a>.
+  One thing is missing though: regex search.
+</p>
+
+<p>
+  Why you should use this API:
+</p>
+<ul>
+  <li>
+    It is asynchronous, i.e. the user interface is normally not blocked when
+    the <code>GtkTextBuffer</code> is scanned. And the asynchronous overhead is
+    small;
+  </li>
+  <li>
+    The search matches are highlighted;
+  </li>
+  <li>
+    You can get the total number of occurrences and the position of a certain
+    occurrence easily;
+  </li>
+  <li>
+    For each search, the buffer is scanned at most once. Once the search
+    occurrences are found, navigating through them doesn't require to re-scan
+    the buffer, thanks to <code>gtk_text_iter_forward_to_tag_toggle()</code>.
+    As a result, most operations are really fast;
+  </li>
+  <li>
+    The regex search (still to come) will normally do multi-segment matching,
+    also called incremental matching: when a partial match is returned, we take
+    a bigger segment. No need to waste memory space to retrieve the entire
+    buffer contents.
+  </li>
+</ul>
+
+<p>Nice, isn't it?</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Developing graphical IDEs the UNIX way</title>
+  <id>https://wilmet-software.be/blog/2013-07-03-developing-graphical-IDEs-the-unix-way.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2013-07-03-developing-graphical-IDEs-the-unix-way.html" />
+  <published>2013-07-03T10:00:00Z</published>
+  <updated>2013-07-03T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<h3>Introduction</h3>
+<p>
+  Programming on a UNIX environment typically involves the use of CLI (Command
+  Line Interface) tools and TUI (Terminal User Interface) programs. What is
+  really nice about these tools is that they do only one thing, but do it well.
+</p>
+<p>
+  An advantage of a GUI (Graphical User Interface) application is that it can
+  have features that are almost impossible to implement as a TUI. So a GUI
+  program is sometimes more convenient to use.
+</p>
+<p>
+  An IDE is an integrated development environment. What people think about this
+  "environment" is generally a single program. But what if the environment is
+  not one big application, but several small programs? The small programs can
+  interact a little together through an Inter-Process Communication system like
+  D-Bus.
+</p>
+
+<h3>The different tools and their interactions</h3>
+<p>
+  So, the idea is to create development tools as several small GUI applications.
+  You need a text editor, a tool for git, something to compile and run the
+  project, a debugger, a documentation browser, a terminal of course, and so on.
+</p>
+<p>
+  All these could interact. IDEs usually have the concept of projects. We can
+  imagine the same with small apps, by having for instance a hub application to
+  create and open projects, and then it opens the other apps with the current
+  project.
+</p>
+<p>
+  Or just being able to launch another tool from the text editor, with a given
+  context so that the other tool is directly opened with the right content.
+</p>
+
+<h3>Conclusion</h3>
+<p>
+  Such an "IDE" would feel more lightweight than a single application. It would
+  be interesting to explore and experiment this idea.
+</p>
+
+<p>
+  <strong>Revisions:</strong><br />
+  July 2013: first version, contained too many details and a troll about
+  Eclipse.<br />
+  April 2024: new version, almost entirely rewritten.
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Hi, planet GNOME! GSoC on (mainly) GtkSourceView</title>
+  <id>https://wilmet-software.be/blog/2013-06-23-hi-planet-gnome-gsoc-on-mainly-gtksourceview.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2013-06-23-hi-planet-gnome-gsoc-on-mainly-gtksourceview.html" />
+  <published>2013-06-23T10:00:00Z</published>
+  <updated>2013-06-23T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  My blog has just been added to the planet GNOME!
+</p>
+
+<p>
+  I'm now a GSoC student, working mainly on
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview">GtkSourceView</a>
+  (<a href="https://wiki.gnome.org/Outreach(2f)SummerOfCode(2f)2013(2f)Projects(2f)GtkSourceView.html">my proposal</a>).
+</p>
+
+<p>
+  I'm implementing a higher-level asynchronous API for the search and replace.
+  I hope to finish this task in two weeks.
+</p>
+<p>
+  Then: regex search, adapt gedit, modernize the color schemes and ideally
+  GtkTextTag to use CSS.
+</p>
+
+<h3>Search API, some progress</h3>
+
+<p>
+  The highlighting of search matches works fine, there was a flickering issue
+  that I fixed.
+</p>
+
+<p>
+  A property contains the total number of search occurrences. So while the user
+  is typing the text to search, the buffer is scanned to highlight and count
+  the number of matches. What will be really nice is that, once the buffer is
+  entirely scanned, going to the previous/next occurrence will be a O(log n)
+  operation, thanks to <code>gtk_text_iter_forward_to_tag_toggle()</code>
+  (that's why the matches must be highlighted even if they are not visible on
+  the screen). It was more difficult to implement than always using
+  <code>gtk_text_iter_forward_search()</code> and
+  <code>backward_search()</code> to navigate through the occurrences, but I
+  think it was worth the effort.
+</p>
+
+<p>
+  If you want to read more details, I've written a quite long implementation
+  overview, with the problems to avoid,
+  <a href="https://git.gnome.org/browse/gtksourceview/tree/gtksourceview/gtksourcesearch.c?h=wip/search">at the top of gtksourcesearch.c</a>
+  (it will also be useful to future maintainers).
+</p>
+
+<p>
+  I'll continue to blog to explain my progress, so stay tuned!
+</p>
+
+<p>
+  <strong>Edit:</strong> update some links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>My work on GtkSourceView so far</title>
+  <id>https://wilmet-software.be/blog/2013-03-19-my-work-on-gtksourceview-so-far.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2013-03-19-my-work-on-gtksourceview-so-far.html" />
+  <published>2013-03-19T10:00:00Z</published>
+  <updated>2013-03-19T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  During the GNOME 3.7 development cycle I've been busy working on
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview">GtkSourceView</a>,
+  a library used by
+  <a href="https://gedit-text-editor.org/">gedit</a>,
+  <a href="https://gitlab.gnome.org/Archive/anjuta">Anjuta DevStudio</a>,
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex">LaTeXila</a>,
+  and other applications.
+</p>
+
+<p>
+  The main change is that <strong>the completion system has been revamped,
+  mainly under the hood</strong>.
+</p>
+
+<h3>Completion: user-visible changes</h3>
+<p>
+  The only user-visible changes are the <strong>bug fixes</strong> and the
+  <strong>new <em>calltip</em> window sizing</strong>, also used for displaying
+  extra pieces of information for proposals. In GtkSourceView 2 there was a
+  function for tuning the calltip sizing, but this function has been removed
+  when porting GtkSourceView to GTK+ 3. Now the sizing works correctly without
+  any tuning function, the window simply fits the natural size of its child
+  widget.
+</p>
+
+<p>
+  Now the user-comprehensible explanation:
+</p>
+
+<p>
+  Screenshot <em>before</em> (<strong>Update:</strong> no longer available).
+</p>
+<p>
+  Screenshot <em>after</em> (<strong>Update:</strong> no longer available).
+</p>
+
+<p>
+  You see that the main completion window is still quite big when there are
+  only a few proposals. For now it's not possible to change that, but a more
+  compact completion window should be possible in the future.
+</p>
+
+<h3>Completion: developer-visible changes</h3>
+
+<p>
+  The completion system is now better documented. A few functions have been
+  deprecated. The code has been simplified (two classes have been almost
+  completely rewritten). There are also some performance improvements, but it
+  was not really an issue previously. Some statistics on the number of lines:
+</p>
+
+<p>Before:</p>
+<pre>
+$ wc -l gtksourcecompletion*.{c,h} | tail -1
+  8012 total
+</pre>
+
+<p>After:</p>
+<pre>
+$ wc -l gtksourcecompletion*.{c,h} | tail -1
+  6728 total
+</pre>
+
+<blockquote>
+  <q>Perfection is achieved not when there is nothing more to add, but rather
+  when there is nothing more to take away.</q> (Antoine de Saint-Exupéry)
+</blockquote>
+
+<h3>Other enhancements to GtkSourceView</h3>
+
+<p>
+  <a href="http://blogs.gnome.org/pbor/">Paolo</a> and I wrote more
+  <strong>unit tests</strong>, and code coverage support has been added, to
+  have statistics with nice colors.
+</p>
+
+<p>
+  Lots of <strong>compilation warnings have been fixed</strong>, especially for
+  the API documentation. For example, the links to GLib or GTK+ symbols work
+  now. Compilation warnings are generally easy to fix, it's a good way to get
+  involved in a project I think, if there are no easy bugs to fix.
+</p>
+
+<p>
+  That's all folks. Thanks to
+  <a href="http://blogs.gnome.org/pbor/">Paolo</a>,
+  <a href="http://blogs.gnome.org/nacho/">Ignacio</a>
+  and
+  <a href="http://blogs.gnome.org/jessevdk/">Jesse</a>
+  for their advices and reviews!
+</p>
+
+<p>
+  <strong>Edit:</strong> update the links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Switch from CMake to Autotools</title>
+  <id>https://wilmet-software.be/blog/2012-09-05-switch-from-cmake-to-autotools.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2012-09-05-switch-from-cmake-to-autotools.html" />
+  <published>2012-09-05T10:00:00Z</published>
+  <updated>2012-09-05T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Last week I've migrated the build system of
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex">LaTeXila</a>
+  from CMake to the Autotools. Here are the reasons.
+</p>
+
+<h3>The GNU Coding Standards</h3>
+
+<p>
+  With CMake, some important make's targets are missing, for example
+  <code>make uninstall</code>. The main problem is that CMake doesn't follow
+  the
+  <a href="https://www.gnu.org/prep/standards/">GNU Coding Standards</a>
+  (GCS). The purposes of the GCS, with regard to a build system, is to make a
+  program portable, easy to install, and consistent with the way other
+  softwares are built and installed.
+</p>
+
+<p>
+  The GCS has several decades of experience, the standards are well
+  established, and we can trust the GNU hackers for having well conceived them.
+  Those that don't follow them are devoted to reinvent the wheel: they will be
+  faced sooner or later by the same problems already solved by the GCS and the
+  Autotools…
+</p>
+
+<p>
+  Following standards is important both for users and packagers. If every
+  software uses a different build system, with different options etc, it is a
+  nightmare.
+</p>
+
+<h3>Available macros for GNOME applications</h3>
+
+<p>
+  Another reason to use the Autotools, for a GNOME application, is to use the
+  available macros: for the translations (intltool, ITS Tool), the
+  documentation (yelp), the settings (gsettings), …
+</p>
+
+<h3>Creating a tarball</h3>
+
+<p>
+  With the Autotools it is as simple as running <code>make distcheck</code>,
+  and putting some files in <code>EXTRA_DIST</code> or prefixing Automake
+  variables with the <code>dist</code> modifier.
+</p>
+
+<p>
+  It is more complicated with CMake. CPack can be used, but it is far from
+  automatic. When reading the CPack documentation, I changed my mind and wrote
+  a shell script instead.
+</p>
+
+<h3>Learning the Autotools</h3>
+
+<p>
+  The Autotools are not as Autopain as people generally say. The learning curve
+  is maybe steeper, but with a good book
+  (<a href="https://nostarch.com/autotools2e"><em>Autotools - A Practitioner's Guide to GNU Autoconf, Automake, and Libtool</em>, by John Calcote</a>),
+  there are no reasons to be afraid.
+</p>
+
+<p>
+  That said, there are certainly problems in LaTeXila, so some tests before the
+  stable release would be more than welcome ;)
+</p>
+
+<h3>Quick 2026 update and thoughts</h3>
+<p>
+  While resurrecting this article, my thoughts on this are that switching to
+  Autotools was done primarily to benefit from the GNOME macros instead of
+  re-implementing them with CMake. Learning the Autotools permitted me to more
+  easily contribute to GtkSourceView and gedit afterwards. And nowadays in 2026,
+  it's actually CMake that I recommend instead of Autotools. I also recommend
+  CMake over Meson, because with CMake it's possible to write our own functions
+  and macros while Meson lacks that support: with Meson it's often required to
+  copy/paste snippets of code from one project to another.
+</p>
+<p>
+  I've also updated the links (there is now a second edition of the Autotools
+  book).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Some principles for the user experience of a LaTeX editor</title>
+  <id>https://wilmet-software.be/blog/2012-08-19-some-principles-for-the-user-experience-of-a-latex-editor.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2012-08-19-some-principles-for-the-user-experience-of-a-latex-editor.html" />
+  <published>2012-08-19T10:00:00Z</published>
+  <updated>2012-08-19T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  This blog post is now available as a PDF article instead:
+</p>
+<p>
+  <a href="https://gitlab.gnome.org/swilmet/enter-tex-extra/-/blob/main/articles/pdf/latex-editor-some-principles.pdf" target="_blank">latex-editor-some-principles.pdf</a>
+</p>
+<p>
+  <strong>Edit:</strong> replace content by a link (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>About code quality and maintainability</title>
+  <id>https://wilmet-software.be/blog/2012-08-01-about-code-quality-and-maintainability.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2012-08-01-about-code-quality-and-maintainability.html" />
+  <published>2012-08-01T10:00:00Z</published>
+  <updated>2012-08-01T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  It can be difficult to write clean code, that is easy to understand, split in
+  nice and well-defined functions that do one thing but do it well, with good
+  variables names, and so on. For the maintainability, it is really important.
+</p>
+<p>
+  In fact, a code is read far more often than it is written. For fixing a bug,
+  adding a feature, or simply see how it is implemented.
+</p>
+
+<h3>General Advices</h3>
+<p>
+  There are some general advices, for example:
+</p>
+<ul>
+  <li>
+    A function's name should be sufficient to know all what the function really
+    does.
+  </li>
+  <li>
+    Hide implementation details, and use the domain-specific vocabulary, no
+    technical words, if possible. An extreme example:
+    <code>get_last_document()</code> is better than
+    <code>get_top_stack()</code>.
+  </li>
+  <li>
+    Avoid focusing on performance from the beginning. About 10% of the code is
+    responsible of 90% of the execution time. An optimized code is more
+    difficult to understand, so it is better to optimize only the 10%.
+  </li>
+</ul>
+
+<h3>Every Details Matters</h3>
+<p>
+  Small details can also improve the code readability. Take for example this
+  line:
+</p>
+<pre>
+g_return_if_fail (foo &gt;= min_value &amp;&amp; foo &lt;= max_value);
+</pre>
+<p>
+  And compare it with this one:
+</p>
+<pre>
+g_return_if_fail (min_value &lt;= foo &amp;&amp; foo &lt;= max_value);
+</pre>
+<p>
+  Which one do you prefer? In the second sample, we can visually see the
+  <code>foo</code> variable between the minimum and maximum values.
+</p>
+<p>
+  Many such small improvements, taken together, make the code more enjoyable to
+  read.
+</p>
+
+<h3>Code Complete</h3>
+<p>
+  We can learn these and other advices by reading some (good) existent code, by
+  working with more experienced developers, AND by sitting in a comfortable
+  sofa with a cup of coffee or tea while reading a book.
+</p>
+<p>
+  I personally have read
+  <a href="https://stevemcconnell.com/books/">Code Complete</a>
+  (by Steve McConnell) last year. It seems the reference on the subject. But
+  there are other similar books, for instance
+  <a href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/">The Pragmatic Programmer</a>
+  (by David Thomas and Andrew Hunt).
+</p>
+<p>
+  Although the editor of Code Complete is Microsoft Press, the book is not
+  related to Microsoft or Windows. The author explains sometimes stuff related
+  to open source, UNIX and Linux, but one can regret the total absence of the
+  mention "free software" and all the benefits of freedom: be able to learn by
+  reading other's code, etc. But if you are here, you already know all of this,
+  because you are on the good side ;)
+</p>
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Introduce myself</title>
+  <id>https://wilmet-software.be/blog/2012-07-31-introduce-myself.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2012-07-31-introduce-myself.html" />
+  <published>2012-07-31T10:00:00Z</published>
+  <updated>2012-07-31T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  This is my first blog post.
+</p>
+<p>
+  My name is Sébastien Wilmet. I live in Belgium, and I currently study
+  computer science at the university (in Louvain-la-Neuve).
+</p>
+<p>
+  I'm the maintainer of
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex">LaTeXila</a>,
+  an integrated LaTeX environment written in Vala. I also contribute to other
+  modules, like
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview">GtkSourceView</a>.
+</p>
+<p>
+  I'm not a GSoC student, but maybe next year ;)
+</p>
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+    </div>
+  </content>
+</entry>
+
+</feed>

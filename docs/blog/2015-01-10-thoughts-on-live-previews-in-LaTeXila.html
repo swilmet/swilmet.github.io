@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thoughts on live previews in LaTeXila | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2015-01-10">2015-01-10</time>: Thoughts on live previews in LaTeXila</h2>
+
+<p>
+  Several years ago I talked about
+  <a href="2012-08-19-some-principles-for-the-user-experience-of-a-latex-editor.html" target="_blank">some principles for the user experience</a>
+  of
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex" target="_blank">LaTeXila</a>,
+  a GTK+ LaTeX editor for GNU/Linux. The conclusion:
+</p>
+<blockquote>
+  <q>The idea of LaTeXila is to always deal directly with the LaTeX code, while
+  simplifying as most as possible the writing of this LaTeX code. The users
+  don't need to be LaTeX gurus, but they should understand what happens.</q>
+</blockquote>
+
+<p>
+  In my opinion this better follows the LaTeX philosophy than programs like
+  <a href="https://www.lyx.org/" target="_blank">LyX</a>.
+  By writing directly the LaTeX markup, you have full control of your document.
+  The idea of LaTeX is to concentrate on the content and the structure of the
+  document, not its layout.
+</p>
+
+<p>
+  With a live preview, you see constantly the layout… so you're less
+  concentrated on the content. As soon as something is wrong in the layout,
+  you'll want to fix it. This can lead to bad practices, like proceeding by
+  trials and errors until the layout is good. LaTeXila tries to avoid that. As
+  in programming, you should understand what you've written before the
+  compilation or execution. You must be certain that the code is correct; if
+  you have any doubts, the best is to read the documentation, this will save
+  you time when you'll use the same commands in the future.
+</p>
+
+<p>
+  Moreover, layout polishing should be done when the content is finished. For
+  instance, it can sometimes happen that a word exceeds the margin, because
+  LaTeX doesn't know where to place an hyphen to split that word. It is useless
+  to fix this issue when the content isn't finalized, because if you add or
+  remove some words in the sentence, the problem will maybe be fixed by itself.
+</p>
+
+<p>
+  Instead of a live preview, the workflow in LaTeXila is to compile from time
+  to time the document (e.g. when you've finished a section) to re-read your
+  text and check that the result is what you expected. A handy feature in that
+  context is the forward and backward search between LaTeXila and
+  <a href="https://gitlab.gnome.org/GNOME/evince" target="_blank">Evince</a>,
+  to switch between the *.tex file(s) and the PDF at the corresponding
+  positions, with a simple Ctrl+click.
+</p>
+
+<p>
+  But there are some special cases where a live preview can be useful, i.e.
+  when more source <code>&lt;-&gt;</code> result cycles are required:
+</p>
+<ul>
+  <li>
+    A
+    <a href="https://en.wikipedia.org/wiki/PGF/TikZ" target="_blank">PGF/TikZ</a>
+    <a href="https://bugzilla.gnome.org/show_bug.cgi?id=722910" target="_blank">figure preview</a>,
+    because in that case the layout is more important.
+  </li>
+  <li>
+    When we do something difficult, like writing a long and tricky math
+    equation. But when it becomes difficult to find our way in the code, an
+    alternative is to improve its readability, by spacing it out, adding
+    comments to separate the sections, etc.
+  </li>
+</ul>
+
+<p>
+  If you have other specific use cases where a live preview is really useful, I
+  would be interested to hear them. I don't think “learning LaTeX” requires a
+  live preview, as explained above this can result in bad practices.
+</p>
+
+<p>
+  So I think a live preview might be useful for editing <em>one</em> paragraph.
+  A live preview of the whole document is probably less useful. In any case, a
+  live preview should be enabled only temporarily. In LaTeXila we can imagine
+  doing a right click on a paragraph or TikZ figure, select the live preview in
+  the context menu and we enter in a mode where only that paragraph (or
+  selection) is visible, with the live preview on top/right/directly injected
+  in your brain/whatever. Then when the writing of the tricky paragraph is
+  finished, we return to the normal mode with the whole source content.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

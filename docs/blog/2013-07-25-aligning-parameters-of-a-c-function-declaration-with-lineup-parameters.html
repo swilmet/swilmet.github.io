@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aligning parameters of a C function declaration, with lineup-parameters | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2013-07-25">2013-07-25</time>: Aligning parameters of a C function declaration, with lineup-parameters</h2>
+
+<p>
+  Renaming a GObject class can involve a lot of manual work. Once the type is
+  renamed, the parameters of the function declarations are no longer aligned.
+  In the following example, GtkSourceSearch has been renamed to
+  GtkSourceSearchContext:
+</p>
+
+<pre>
+guint
+_gtk_source_search_replace_all (GtkSourceSearchContext *search,
+                                const gchar     *replace,
+                                gint             replace_length)
+{
+        /* ... */
+}
+</pre>
+
+<p>
+  It is a GNOME convention to align the parameters, so the code must be fixed:
+</p>
+
+<pre>
+ guint
+ _gtk_source_search_replace_all (GtkSourceSearchContext *search,
+                                 const gchar            *replace,
+                                 gint                    replace_length)
+{
+        /* ... */
+}
+</pre>
+
+<p>
+  As programmers, we don't like doing such a manual work, and even less when we
+  are renaming a big class. Unfortunately, the
+  <a href="https://www.gnu.org/software/indent/">Indent</a>
+  program doesn't have an option for that. If you use Vim, there is the
+  <a href="http://www.vim.org/scripts/script.php?script_id=294">Align plugin</a>,
+  that have the <code>\afnc</code> alignment mapping. But it doesn't align the
+  parameters on the parenthesis.
+</p>
+
+<p>
+  So I wrote a script! The result is in my
+  <a href="https://gitlab.gnome.org/swilmet/gdev-c-utils">gnome-c-utils repository</a>
+  (containing only the lineup-parameters script for the moment).
+</p>
+
+<p>
+  To detect the parameters, a few regular expressions are used. There are quite
+  a lot of restrictions, but it should work for most GNOME software. To have a
+  perfect script, libclang could be used, but I've never used it, so regular
+  expressions was a quicker solution.
+</p>
+
+<p>
+  The script can be used to convert an entire file, or can be used from a text
+  editor (stdin is read, and the output is written to stdout). I've documented
+  how to add a key binding in Vim. So by pressing a single key, the parameters
+  are correctly aligned!
+</p>
+
+<p>
+  This is just a small step to improve the developer experience in GNOME. But I
+  hope this will be useful for other developers. I dream of a GNOME C IDE that
+  handles the boilerplate (for renaming classes too), that aligns the
+  parameters and the function prototypes in the headers, with auto-completion
+  for signals and properties names, and so on.
+</p>
+
+<p>
+  <strong>Edit:</strong> update the links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

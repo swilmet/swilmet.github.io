@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Developing graphical IDEs the UNIX way | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2013-07-03">2013-07-03</time>: Developing graphical IDEs the UNIX way</h2>
+
+<h3>Introduction</h3>
+<p>
+  Programming on a UNIX environment typically involves the use of CLI (Command
+  Line Interface) tools and TUI (Terminal User Interface) programs. What is
+  really nice about these tools is that they do only one thing, but do it well.
+</p>
+<p>
+  An advantage of a GUI (Graphical User Interface) application is that it can
+  have features that are almost impossible to implement as a TUI. So a GUI
+  program is sometimes more convenient to use.
+</p>
+<p>
+  An IDE is an integrated development environment. What people think about this
+  "environment" is generally a single program. But what if the environment is
+  not one big application, but several small programs? The small programs can
+  interact a little together through an Inter-Process Communication system like
+  D-Bus.
+</p>
+
+<h3>The different tools and their interactions</h3>
+<p>
+  So, the idea is to create development tools as several small GUI applications.
+  You need a text editor, a tool for git, something to compile and run the
+  project, a debugger, a documentation browser, a terminal of course, and so on.
+</p>
+<p>
+  All these could interact. IDEs usually have the concept of projects. We can
+  imagine the same with small apps, by having for instance a hub application to
+  create and open projects, and then it opens the other apps with the current
+  project.
+</p>
+<p>
+  Or just being able to launch another tool from the text editor, with a given
+  context so that the other tool is directly opened with the right content.
+</p>
+
+<h3>Conclusion</h3>
+<p>
+  Such an "IDE" would feel more lightweight than a single application. It would
+  be interesting to explore and experiment this idea.
+</p>
+
+<p>
+  <strong>Revisions:</strong><br />
+  July 2013: first version, contained too many details and a troll about
+  Eclipse.<br />
+  April 2024: new version, almost entirely rewritten.
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

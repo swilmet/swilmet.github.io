@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thoughts on the Linux Mint X-Apps forks | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2016-06-18">2016-06-18</time>: Thoughts on the Linux Mint X-Apps forks</h2>
+
+<p>
+  You may be aware that
+  <a href="https://lwn.net/Articles/689067/" target="_blank">Linux Mint has forked several GNOME applications</a>,
+  either directly from GNOME (Totem -&gt; Xplayer, Evince -&gt; Xreader,
+  Eye of GNOME -&gt; Xviewer), or indirectly via MATE
+  (gedit -&gt; pluma -&gt; XEd).
+</p>
+
+<p>
+  GNOME is like the Debian of the Linux desktops: it is forked a lot. But is it
+  a good thing? In the current state of the code, I don't think so and I'll
+  explain why, with a solution: creating more shared libraries.
+</p>
+
+<p>
+  At the end of the day, it's just a matter of design and usability concerns.
+  We can safely say that the main reason behind the forks is that the Linux
+  Mint developers don't like the new design of GNOME applications with a
+  <a href="https://docs.gtk.org/gtk4/class.HeaderBar.html" target="_blank">GtkHeaderBar</a>.
+</p>
+
+<p>
+  And there are perfectly valid reasons to <em>not</em> like headerbars. For
+  example, see the
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)NewDesignToDo.html" target="_blank">list of usability regressions for gedit</a>.
+</p>
+
+<p>
+  Currently the trend is GtkHeaderBar, but what will it be in 5 years, 10
+  years? Let's face it, GNOME is here just following the new trend that came
+  with smartphones and tablets.
+</p>
+
+<p>
+  So, a GNOME application developer needs to know that:
+</p>
+
+<ul>
+  <li>
+    A GUI is an ever-changing thing, exactly like the clothes that you bought
+    last year are already obsolete, right?
+  </li>
+
+  <li>
+    When the GUI changes too much, other developers don't like it and fork the
+    project.
+  </li>
+</ul>
+
+<p>
+  The four X-Apps forks account for roughly 200k lines of code. In the
+  short-term it works, Linux Mint has apps with a traditional UI. But hey,
+  porting the code to GTK+ 4 will be another beast, because the four X-Apps
+  still use the deprecated GtkUIManager and GtkAction APIs, among other things.
+</p>
+
+<p>
+  But when we look at the codebase, there are a lot of code that could be
+  shared between a GNOME app and its fork(s). So there <em>is</em> a solution:
+  creating more shared libraries. The shared libraries would contain the
+  backend code, of course, but also some basic blocks for the UI. The
+  application would just need to glue things up together, assembling objects,
+  binding GObject properties to GSettings, create the main GtkWindow and a few
+  other things.
+</p>
+
+<p>
+  The difference would be that instead of forking 200k lines of code, it would
+  be forking maybe 20k lines, which is more manageable to maintain in the long
+  run.
+</p>
+
+<p>
+  In the text editors case,
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)ReusableCode.html" target="_blank">making the gedit source code more re-usable</a>
+  is exactly what I've been doing for several years now, but for another reason:
+  being able to create easily specialized text editors or small IDEs.
+</p>
+
+<p>
+  Beside avoiding code duplication, creating a shared library has the nice side
+  effect that it is much better documented (usually), and with an API browser
+  like
+  <a href="https://github.com/gdev-technology/devhelp" target="_blank">Devhelp</a>,
+  it's a breeze to discover and understand a new codebase, it permits to have a
+  nice overview of the classes. It's of course possible to have such
+  documentation for application code, but in practice few developers do that,
+  although it would be a big step towards lowering the barrier to entry for
+  newcomers.
+</p>
+
+<p>
+  When untangling some code from an application and putting it in a shared
+  library, it is also easier to make the code unit testable (and unit tested!),
+  or at least write a mini interactive test in case of frontend code. Making
+  the code more stable, getting closer to bug-free code and thus more
+  successful software.
+</p>
+
+<p>
+  Developing a shared library doesn't necessarily mean to provide backward
+  compatibility during 10 years. Nothing prevents you from bumping the major
+  version of the library every 6 months if needed, making the new version
+  parallel-installable with the previous major versions. So that applications
+  are not forced to update the code when there is an API break.
+</p>
+
+<p>
+  But creating a library is more difficult, API design is hard. But in my
+  opinion it is worth it. GNOME is not only a desktop environment with an
+  application suite, it is also a development platform.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My work on GtkSourceView so far | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2013-03-19">2013-03-19</time>: My work on GtkSourceView so far</h2>
+
+<p>
+  During the GNOME 3.7 development cycle I've been busy working on
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview">GtkSourceView</a>,
+  a library used by
+  <a href="https://gedit-text-editor.org/">gedit</a>,
+  <a href="https://gitlab.gnome.org/Archive/anjuta">Anjuta DevStudio</a>,
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex">LaTeXila</a>,
+  and other applications.
+</p>
+
+<p>
+  The main change is that <strong>the completion system has been revamped,
+  mainly under the hood</strong>.
+</p>
+
+<h3>Completion: user-visible changes</h3>
+<p>
+  The only user-visible changes are the <strong>bug fixes</strong> and the
+  <strong>new <em>calltip</em> window sizing</strong>, also used for displaying
+  extra pieces of information for proposals. In GtkSourceView 2 there was a
+  function for tuning the calltip sizing, but this function has been removed
+  when porting GtkSourceView to GTK+ 3. Now the sizing works correctly without
+  any tuning function, the window simply fits the natural size of its child
+  widget.
+</p>
+
+<p>
+  Now the user-comprehensible explanation:
+</p>
+
+<p>
+  Screenshot <em>before</em> (<strong>Update:</strong> no longer available).
+</p>
+<p>
+  Screenshot <em>after</em> (<strong>Update:</strong> no longer available).
+</p>
+
+<p>
+  You see that the main completion window is still quite big when there are
+  only a few proposals. For now it's not possible to change that, but a more
+  compact completion window should be possible in the future.
+</p>
+
+<h3>Completion: developer-visible changes</h3>
+
+<p>
+  The completion system is now better documented. A few functions have been
+  deprecated. The code has been simplified (two classes have been almost
+  completely rewritten). There are also some performance improvements, but it
+  was not really an issue previously. Some statistics on the number of lines:
+</p>
+
+<p>Before:</p>
+<pre>
+$ wc -l gtksourcecompletion*.{c,h} | tail -1
+  8012 total
+</pre>
+
+<p>After:</p>
+<pre>
+$ wc -l gtksourcecompletion*.{c,h} | tail -1
+  6728 total
+</pre>
+
+<blockquote>
+  <q>Perfection is achieved not when there is nothing more to add, but rather
+  when there is nothing more to take away.</q> (Antoine de Saint-Exupéry)
+</blockquote>
+
+<h3>Other enhancements to GtkSourceView</h3>
+
+<p>
+  <a href="http://blogs.gnome.org/pbor/">Paolo</a> and I wrote more
+  <strong>unit tests</strong>, and code coverage support has been added, to
+  have statistics with nice colors.
+</p>
+
+<p>
+  Lots of <strong>compilation warnings have been fixed</strong>, especially for
+  the API documentation. For example, the links to GLib or GTK+ symbols work
+  now. Compilation warnings are generally easy to fix, it's a good way to get
+  involved in a project I think, if there are no easy bugs to fix.
+</p>
+
+<p>
+  That's all folks. Thanks to
+  <a href="http://blogs.gnome.org/pbor/">Paolo</a>,
+  <a href="http://blogs.gnome.org/nacho/">Ignacio</a>
+  and
+  <a href="http://blogs.gnome.org/jessevdk/">Jesse</a>
+  for their advices and reviews!
+</p>
+
+<p>
+  <strong>Edit:</strong> update the links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

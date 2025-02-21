@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Introducing gspell, a new spell checking library | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2015-09-16">2015-09-16</time>: Introducing gspell, a new spell checking library</h2>
+
+<p>
+  As part of the
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex" target="_blank">LaTeXila</a>
+  project, I'm working on a new spell checking library called
+  <a href="https://gitlab.gnome.org/GNOME/gspell" target="_blank">gspell</a>.
+</p>
+
+<h3>Some background</h3>
+
+<p>
+  At first I wanted to contribute to
+  <a href="https://gtkspell.sourceforge.net/" target="_blank">GtkSpell</a>
+  so that GtkSpell and
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>
+  work well together, without a dependency on each other. GtkSourceView defines
+  a no-spell-check region. For LaTeX, the region includes the LaTeX command's
+  names, for example. But GtkSpell didn't read that region, and the region was
+  available only through the GtkSourceView API. Adding a dependency on
+  GtkSourceView in GtkSpell was not desirable, because many applications use
+  GtkSpell only. Also, a library like GtkSpell could potentially add the
+  support for GtkEntry too, so if there is a dependency on GtkSourceView, it
+  isn't nice for an application that wants only the spell checking for a
+  GtkEntry. The solution was actually really simple: the no-spell-check region
+  is a GtkTextTag. After setting a name to the tag and expose it in the API, it
+  was possible for GtkSpell to lookup the tag and read the region.
+</p>
+
+<p>
+  So the patches for GtkSourceView and GtkSpell have been merged, to remark
+  only later that there was a quite annoying text responsiveness problem on
+  long lines (e.g. a wrapped line that takes 5 lines on the screen). And… there
+  was exactly the same problem with the
+  <a href="https://gedit-text-editor.org/" target="_blank">gedit</a>
+  spell plugin. The typed text appeared with a noticeable delay. Fixing that
+  problem was more complicated. The text needs to be spell checked after a
+  timeout. But adding a timeout function means that the remaining region to
+  spell check needs to be tracked, which was not the case, neither in GtkSpell
+  nor in gedit. And another problem is that GtkSpell anyway needed some code
+  clean-ups. On the other hand the gedit code was in a slightly better shape
+  and, more importantly, it had more features. For example gedit has a dialog
+  window to spell check an entire document, one (misspelled) word at a time,
+  whereas GtkSpell only has an “in-line” checker. An in-line checker is not
+  convenient in the case of a very long document with very few misspelled
+  words, in that case the dialog window is more convenient (BTW it could also
+  be an horizontal bar above or below the text, to not occlude the text by the
+  dialog window).
+</p>
+
+<p>
+  So, since the gedit spell plugin's code had more features, I've decided to
+  improve that code base instead. The gedit plugin code also needed some code
+  clean-ups, but at least the code architecture was for the most part good.
+  After those code refactorings and bug fixes, it was easier to fix the
+  responsiveness problem. Then, after some more “spell shaking” (haha) the code
+  was re-usable for other text editors.
+</p>
+
+<h3>Enters gspell</h3>
+
+<p>
+  The gedit spell plugin's code has then been copied into its own repository,
+  called <em>gspell</em>. The library is still under construction, but I hope
+  to get a first version available when GNOME 3.18.0 is released (September 21,
+  according to
+  <a href="https://wiki.gnome.org/ThreePointSeventeen" target="_blank">the schedule</a>).
+  That first version will <em>not</em> have a guaranteed stable API, be warned!
+  It is currently available on my GitHub account, but if things go well, I'll
+  ask during the next development cycle to get it hosted on
+  <a href="https://www.gnome.org/" target="_blank">gnome.org</a>!
+</p>
+
+<p>
+  <strong>Update:</strong> gspell is now hosted on gnome.org, the links above
+  have been updated.
+</p>
+
+<h3>What it means for LaTeXila</h3>
+
+<p>
+  Basically, the LaTeX command's names won't be highlighted anymore with a red
+  wavy underline. And there will be a dialog window to spell check an entire
+  file. Also, on the LaTeXila side, settings will be stored on a file-by-file
+  basis (to remember the language and whether the in-line checker is
+  activated), and there will be settings in the preferences dialog for the
+  default configuration.
+</p>
+
+<p>
+  I already have a branch in LaTeXila that uses gspell, and it works pretty
+  well. There is still a bit of work to do, but it should be ready soon. Since
+  it would be a pity to not have it for LaTeXila 3.18, I'll delay the release
+  of LaTeXila 3.18.0 for a few weeks to let translators have the time to update
+  the translations.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

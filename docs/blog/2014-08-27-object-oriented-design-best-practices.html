@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Object-oriented design best practices | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2014-08-27">2014-08-27</time>: Object-oriented design best practices</h2>
+
+<p>
+  Here is another book review, this time about object-oriented design.
+</p>
+
+<h3>Programming Best Practices</h3>
+
+<p>
+  We can learn by our own experience, we can use our common sense, we can learn
+  by more experienced developers when contributing to an existing project. But
+  to speed things up, reading a good old book is also a good idea.
+</p>
+
+<p>
+  For programming in general, not specifically for object-oriented design, see
+  my blog post
+  <a href="2012-08-01-about-code-quality-and-maintainability.html" target="_blank">About code quality and maintainability</a>.
+</p>
+
+<h3>Object-Oriented Design Heuristics</h3>
+
+<p>
+  For OO design, the well-known
+  <a href="https://www.pearson.com/en-gb/subject-catalog/p/design-patterns-elements-of-reusable-object-oriented-software/P200000009480/9780201633610" target="_blank">Design Patterns</a>
+  (by Gamma, Helm, Johnson and Vlissides)
+  book is often advised. But most of the design patterns are not often applied,
+  or are useful only for big applications and frameworks. How often do you
+  <em>create</em> an
+  <a href="https://en.wikipedia.org/wiki/Abstract_factory_pattern" target="_blank">Abstract Factory</a>
+  or a
+  <a href="https://en.wikipedia.org/wiki/Facade_pattern" target="_blank">Façade</a>?
+</p>
+
+<p>
+  On the other hand, the book
+  <a href="https://www.oreilly.com/library/view/object-oriented-design-heuristics/020163385X/" target="_blank">Object-Oriented Design Heuristics</a>
+  (by Arthur Riel)
+  discusses in details more than 60 guidelines
+  - or heuristics - that can be applied to all projects, even for a small
+  codebase with three classes.
+</p>
+
+<p>
+  Example of an heuristic:
+</p>
+<blockquote>
+  <q>Keep related data and behavior in one place.</q>
+</blockquote>
+
+<p>
+  If a getter method is present in a class, why is the data used outside the
+  class? The behavior implemented outside the class can maybe be implemented
+  directly in the class, so the getter can be replaced by a higher-level
+  method.
+</p>
+
+<p>
+  Other example:
+</p>
+<blockquote>
+  <q>Distribute system intelligence horizontally as uniformly as possible, that
+  is, the top-level classes in a design should share the work uniformly.</q>
+</blockquote>
+
+<p>
+  By following this heuristic, god classes should be avoided. An example of a
+  class that can be split in two is where some methods use only attributes A
+  and B, while some other methods use only attributes C and D. In other words,
+  if a class has non-communicating behavior, that is, methods that operate on a
+  proper subset of the data members of the class, then the class can be split.
+</p>
+
+<p>
+  All the heuristics can not be followed all the time. That's why they are
+  called “heuristics”. But when an heuristic is violated, there should be good
+  reasons behind that decision, and the developer should know what he or she is
+  doing.
+</p>
+
+<h3>Event-driven programming</h3>
+
+<p>
+  One missing concept in the book is event-driven programming.
+</p>
+
+<p>
+  With GObject, we are lucky to have a powerful signal system. It is a great
+  way to decouple classes. When an object sends a signal, the class doesn't
+  know who receive it.
+</p>
+
+<h3>Conclusion</h3>
+
+<p>
+  Programming best practices are useful to maintain a good code quality.
+  <em>Object-Oriented Design Heuristics</em>
+  will give you the knowledge to better write object-oriented code, either for
+  small projects, big projects or API design in a library.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

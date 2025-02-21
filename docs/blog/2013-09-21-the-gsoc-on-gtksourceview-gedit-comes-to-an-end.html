@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The GSoC on GtkSourceView/gedit comes to an end | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2013-09-21">2013-09-21</time>: The GSoC on GtkSourceView/gedit comes to an end</h2>
+
+<p>
+  A small update on my GSoC.
+</p>
+
+<p>
+  The first part took a little longer than expected. But I'm happy with the
+  results, the search and replace API is simple and flexible, there were not a
+  lot of bugs to fix, and gedit users will be happy with the improvements
+  (including
+  <a href="2013-08-19-regex-search-in-gedit-and-gtksourceview-finally.html">the regex search</a>).
+</p>
+
+<p>
+  I've changed a little what was initially planned for the second part of the
+  GSoC. Ideally, it was to rework the color schemes to use CSS, and investigate
+  GtkTextTag to modernize it. For the color schemes, it was not really a
+  high-priority issue for
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview">GtkSourceView</a>,
+  writing them in XML works fine. And the GtkTextTag investigation would have
+  been the logical follow-up. But with the remaining time, I have found other
+  interesting and smaller tasks instead.
+</p>
+
+<p>
+  The past few weeks I worked on various things in other parts of GtkSourceView
+  and gedit: better document the API, fix some bugs, improve the code here and
+  there, and investigate two longer projects: the code folding and making the
+  gedit source code more reusable.
+</p>
+
+<p>
+  I've written a
+  <a href="https://bugzilla.gnome.org/show_bug.cgi?id=707703">utility class</a>
+  to navigate quickly through a set of GtkTextMarks. It is a cleaner
+  implementation of GtkSourceMarks, and it will be useful for the code folding.
+</p>
+
+<h3>Making the gedit source code more reusable</h3>
+
+<p>
+  For making the gedit source code more reusable, I've created a git submodule
+  called
+  <a href="https://github.com/swilmet/libgedit">libgedit</a>.
+  Like the
+  <a href="https://gitlab.gnome.org/GNOME/libgd">libgd</a>,
+  the API/ABI stability is not guaranteed. The purpose is to try to move as
+  most code as possible in the libgedit, iterate the API if needed until it is
+  good enough to be included in GtkSourceView. So the libgedit would be a
+  staging area between gedit and GtkSourceView. There is a problem though:
+  gedit has an API for its plugins. And if possible, it's better to not break
+  the plugins… If the code moves from gedit to the libgedit, and then from the
+  libgedit to GtkSourceView, there can be several API breaks. On the other
+  hand, if the code goes directly in GtkSourceView, there is at most one API
+  break (that can be avoided if the gedit functions are simply deprecated, not
+  removed). With the second solution, the risk is to discover problems too
+  late.
+</p>
+
+<p>
+  Maintaining the gedit plugins API in the libgedit is one problem. There are
+  other problems: it would be nice to share the translations; have an API
+  documentation only for the libgedit (with GTK-Doc, I mean); working with a
+  git submodule is less convenient; having the same namespace ("Gedit") for
+  gedit and libgedit is a problem when trying to make the code more reusable; a
+  headers nightmare, some headers are private, others are public, and others
+  are split between gedit and libgedit; and so on.
+</p>
+
+<p>
+  So I think it will be simpler to move the code directly to GtkSourceView. The
+  API must be well thought. The developers must have enough time during the
+  6-months development cycle to iterate the API if needed. And ideally the API
+  must be tested on other applications than gedit. If it is done slowly but
+  surely, by small steps every cycle, it should be doable.
+</p>
+
+<p>
+  That's all folks. Thanks to
+  <a href="http://blogs.gnome.org/nacho/">Ignacio Casal Quinteiro</a> (nacho)
+  and
+  <a href="http://blogs.gnome.org/pbor/">Paolo Borelli</a> (pbor)
+  for their reviews, advices and (sometimes late ;-) ) testing. Thanks to
+  Garrett Regier (gregier) for having well tested the new search and replace in
+  gedit. And thanks to Google and GNOME, for accepting me as a GSoC student.
+</p>
+
+<p>
+  <strong>Edit:</strong> update some links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>
