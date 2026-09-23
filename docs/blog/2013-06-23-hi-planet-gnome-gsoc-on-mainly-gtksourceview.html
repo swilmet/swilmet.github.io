@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hi, planet GNOME! GSoC on (mainly) GtkSourceView | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2013-06-23">2013-06-23</time>: Hi, planet GNOME! GSoC on (mainly) GtkSourceView</h2>
+
+<p>
+  My blog has just been added to the planet GNOME!
+</p>
+
+<p>
+  I'm now a GSoC student, working mainly on
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview">GtkSourceView</a>
+  (<a href="https://wiki.gnome.org/Outreach(2f)SummerOfCode(2f)2013(2f)Projects(2f)GtkSourceView.html">my proposal</a>).
+</p>
+
+<p>
+  I'm implementing a higher-level asynchronous API for the search and replace.
+  I hope to finish this task in two weeks.
+</p>
+<p>
+  Then: regex search, adapt gedit, modernize the color schemes and ideally
+  GtkTextTag to use CSS.
+</p>
+
+<h3>Search API, some progress</h3>
+
+<p>
+  The highlighting of search matches works fine, there was a flickering issue
+  that I fixed.
+</p>
+
+<p>
+  A property contains the total number of search occurrences. So while the user
+  is typing the text to search, the buffer is scanned to highlight and count
+  the number of matches. What will be really nice is that, once the buffer is
+  entirely scanned, going to the previous/next occurrence will be a O(log n)
+  operation, thanks to <code>gtk_text_iter_forward_to_tag_toggle()</code>
+  (that's why the matches must be highlighted even if they are not visible on
+  the screen). It was more difficult to implement than always using
+  <code>gtk_text_iter_forward_search()</code> and
+  <code>backward_search()</code> to navigate through the occurrences, but I
+  think it was worth the effort.
+</p>
+
+<p>
+  If you want to read more details, I've written a quite long implementation
+  overview, with the problems to avoid,
+  <a href="https://git.gnome.org/browse/gtksourceview/tree/gtksourceview/gtksourcesearch.c?h=wip/search">at the top of gtksourcesearch.c</a>
+  (it will also be useful to future maintainers).
+</p>
+
+<p>
+  I'll continue to blog to explain my progress, so stay tuned!
+</p>
+
+<p>
+  <strong>Edit:</strong> update some links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

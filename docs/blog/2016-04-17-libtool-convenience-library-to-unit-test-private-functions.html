@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Libtool convenience library to unit test private functions | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2016-04-17">2016-04-17</time>: Libtool convenience library to unit test private functions</h2>
+
+<p>
+  Only the public API of a library is exported, so when a program is
+  dynamically linked to the
+  <a href="https://www.akkadia.org/drepper/dsohowto.pdf" target="_blank">DSO</a>
+  (Dynamic Shared Object), it can only use the public functions.
+</p>
+
+<p>
+  So how do you unit test the private classes of your library?
+</p>
+
+<p>
+  There is a simple solution, having a Libtool convenience library that
+  contains the whole code of the library, but without an <code>-export</code>
+  linker flag, so that all functions can still be accessed. You then link that
+  *.la file to your unit tests and also to the real library where you add the
+  appropriate <code>-export</code> flag.
+</p>
+
+<p>
+  You can see that in action in
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>
+  and
+  <a href="https://gitlab.gnome.org/GNOME/gspell" target="_blank">gspell</a>.
+  For example in gspell:
+</p>
+
+<ul>
+  <li>
+    <a href="https://gitlab.gnome.org/GNOME/gspell/-/blob/1.0.0/gspell/Makefile.am?ref_type=tags#L58" target="_blank">gspell/Makefile.am</a>
+  </li>
+
+  <li>
+    <a href="https://gitlab.gnome.org/GNOME/gspell/-/blob/1.0.0/testsuite/Makefile.am?ref_type=tags#L10" target="_blank">testsuite/Makefile.am</a>
+  </li>
+</ul>
+
+<p>
+  When you run <code>make</code> in verbose mode with <code>make V=1</code>,
+  you see that the libtool commands statically link the convenience static
+  library (a file with the *.a extension) into the unit test programs and into
+  the DSO.
+</p>
+
+<p>
+  That way the *.c files are compiled only once, and adding a unit test to the
+  <code>testsuite/Makefile.am</code> is straightforward.
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

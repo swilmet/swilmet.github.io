@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Regex search in gedit and GtkSourceView, finally | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2013-08-19">2013-08-19</time>: Regex search in gedit and GtkSourceView, finally</h2>
+
+<p>
+  <em>Screenshot of regex search in gedit</em> (image lost)
+</p>
+
+<p>
+  Although regular expression searches were possible with plugins, it is now
+  available by default in gedit. The search and replace works too, and you can
+  use backreferences (<code>\0</code>, <code>\1</code>, …) in the replacement
+  text.
+</p>
+
+<p>
+  All this work has been merged upstream, just in time before the freeze.
+</p>
+
+<h3>Reworked search and replace API in GtkSourceView</h3>
+
+<p>
+  Behind the scene, the regex search is implemented in GtkSourceView. For most
+  cases, it scales well for big text buffers, since multi-segment matching is
+  done: when a partial match is returned, we take a bigger segment. Read the
+  <a href="https://git.gnome.org/browse/gtksourceview/tree/gtksourceview/gtksourcesearchcontext.c">lengthy implementation overview</a>
+  at the top of <code>gtksourcesearchcontext.c</code> for more details.
+</p>
+
+<p>
+  Besides the regex search, the API is now more flexible. Roughly speaking, it
+  was initially a one-to-one relationship: only one search was possible at a
+  time in a text buffer. It is now a many-to-many relationship: several
+  searches can execute at the same time in the same text buffer (it can be
+  useful for non-highlighted, background searches). And the search settings can
+  be shared between several buffers.
+</p>
+
+<p>
+  Next step for my GSoC: rework the GtkSourceView style schemes to use CSS.
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

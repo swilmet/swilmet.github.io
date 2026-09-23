@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GObject G_DECLARE macros considered harmful | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2015-10-10">2015-10-10</time>: GObject G_DECLARE macros considered harmful</h2>
+
+<p>
+  The GObject library version 2.44 introduced the
+  <code>G_DECLARE_DERIVABLE_TYPE()</code> and
+  <code>G_DECLARE_FINAL_TYPE()</code> macros.
+</p>
+
+<p>
+  Most GNOME developers see these macros as a good thing, to avoid some
+  boilerplate code.
+</p>
+
+<p>
+  I see these macros quite differently, and I avoid them because it creates more
+  problems than it solves.
+</p>
+
+<h3>Old convention</h3>
+
+<p>
+  <em>Without</em> the <code>G_DECLARE_*()</code> macros, the convention was to
+  always have a <code>priv</code> field in the object struct. To access a
+  private field, you write <code>self-&gt;priv-&gt;foo</code>, like this:
+</p>
+
+<pre>
+/* Old convention: have a 'priv' field in the object struct. */
+gint
+my_object_get_foo (MyObject *object)
+{
+  return object-&gt;priv-&gt;foo;
+}
+</pre>
+
+<h3>With G_DECLARE</h3>
+
+<p>
+  When using the <code>G_DECLARE_*()</code> macros, the above code becomes:
+</p>
+
+<pre>
+/* For a final type */
+gint
+my_object_get_foo (MyObject *object)
+{
+  return object-&gt;foo;
+}
+
+/* For a derivable type */
+gint
+my_object_get_foo (MyObject *object)
+{
+  MyObjectPrivate *priv = my_object_get_instance_private (object);
+
+  return priv-&gt;foo;
+}
+</pre>
+
+<p>
+  I see several problems with that approach:
+</p>
+
+<ol>
+  <li>
+    Porting a big project to the <code>G_DECLARE_*()</code> macros takes a
+    significant amount of time! There are currently no refactoring tools to do
+    it quickly.
+  </li>
+
+  <li>
+    Calling <code>my_object_get_instance_private()</code> in each function is
+    quite cumbersome…
+  </li>
+
+  <li>
+    Changing between a final and derivable type is - as you can see - also a lot
+    of mechanical work. So, <em>even for new classes</em>, I don't recommend
+    using these macros!
+  </li>
+</ol>
+
+<p>
+  So as a conclusion, I stick to the old way of implementing GObjects. There are
+  anyway some tools to generate the boilerplate, see for example
+  <a href="https://gitlab.gnome.org/swilmet/gdev-c-utils" target="_blank">gdev-c-utils</a>.
+</p>
+
+<p>
+  <strong>Edit:</strong> rewrote this blog post (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

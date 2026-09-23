@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Making the gedit source code more reusable | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2014-05-20">2014-05-20</time>: Making the gedit source code more reusable</h2>
+
+<p>
+  On IRC I see some developers working on other text editors based on
+  <a href="https://docs.gtk.org/gtk4/section-text-widget.html" target="_blank">GtkTextView</a>/<a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>.
+  It is a good thing in my opinion to have specialized text editors. They are
+  easier to use and configure. A specialized application has a potentially
+  better usability. A general-purpose text editor like
+  <a href="https://gedit-text-editor.org/" target="_blank">gedit</a>
+  is of course still needed for languages not covered by a specialized text
+  editor or IDE.
+</p>
+
+<p>
+  The problem is that creating a new text editor based on GtkSourceView is
+  still quite a lot of work. Instead of reinventing the wheel, the idea is to
+  make the gedit source code more reusable by moving it to GtkSourceView or to
+  a git submodule.
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)ReusableCode.html" target="_blank">This wiki page</a>
+  has all the details, it keeps track of the progress made (see also the
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)OldRoadMap.html" target="_blank">RoadMap</a>),
+  more details on the "why?", and a paragraph on
+  <a href="https://gitlab.gnome.org/Archive/anjuta" target="_blank">Anjuta</a>.
+</p>
+
+<p>
+  This blog post was to make developers aware of this initiative. If you are
+  interested, join us on the #gedit channel or the
+  <a href="https://mail.gnome.org/archives/gedit-list/" target="_blank">mailing list</a>!
+</p>
+
+<p>
+  <strong>Edit:</strong> update all the links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>File loading and saving in GtkSourceView, finally | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2014-07-09">2014-07-09</time>: File loading and saving in GtkSourceView, finally</h2>
+
+<p>
+  Last year
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>
+  saw a new
+  <a href="https://wilmet-software.be/blog/2013-08-19-regex-search-in-gedit-and-gtksourceview-finally.html" target="_blank">search and replace API</a>.
+  This year it's the file loading and saving that has just landed! It is in the
+  continuity of
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)ReusableCode.html" target="_blank">making the gedit source code more reusable</a>
+  for other text editors.
+</p>
+
+<p>
+  In short, the back-end part of the file loading and saving in
+  <a href="https://gedit-text-editor.org/" target="_blank">gedit</a>
+  has been moved to GtkSourceView, with a new and more flexible API to better
+  wrap the feature. The code has been modified to follow GIO conventions for
+  asynchronous operations, to use GTask internally, and replace the uses of
+  GSettings by properties, among other things.
+</p>
+
+<p>
+  The file loader auto-detects encodings, newline types and compression type
+  (yes gedit can open gzip files). Invalid characters can also be displayed
+  with their corresponding hexadecimal value, because GtkTextBuffer accepts
+  only valid UTF-8 text. And progress information is reported during the
+  operation.
+</p>
+
+<p>
+  The API is stateful: the file parameters (encoding etc) are remembered
+  between a file loading and a file saving in a GtkSourceFile object.
+  Unfortunately the new API is still quite low-level. The application must
+  configure the file loader and the file saver, and some errors are returned to
+  the application.
+</p>
+
+<p>
+  So the front-end and errors handling is still implemented in gedit. Errors
+  and progress information are displayed in an info bar, above the
+  GtkSourceView widget. For some errors, gedit proposes different actions to
+  the user, like choosing another encoding.
+</p>
+
+<h3>API design</h3>
+
+<p>
+  If you are a text editor developer, don't hesitate to have a look at the
+  <a href="https://gedit-text-editor.org/developer-docs/libgedit-gtksourceview-300/file-loading-and-saving.html" target="_blank">GtkSourceFile API</a>.
+  The API can still change during this 3.13 development cycle. The notes about
+  the API design are available
+  <a href="https://bugzilla.gnome.org/show_bug.cgi?id=721016" target="_blank">on bugzilla</a>
+  (there has been four iterations). Here is a summary.
+</p>
+
+<p>
+  The API is a bit heavy, with the following classes: GtkSourceEncoding,
+  GtkSourceFile, GtkSourceFileLoader and GtkSourceFileSaver. There are good
+  reasons for having two class' names derived from a verb ("to load" and "to
+  save"), which is generally a hint that those classes should be replaced by a
+  method (i.e. an action). The reasons are partly similar with the new
+  <a href="https://docs.gtk.org/gio/class.SubprocessLauncher.html" target="_blank">GSubprocessLauncher</a>
+  in GIO: the FileLoader and FileSaver classes are there not only for launching
+  the operation, but also for configuring it with a nicer and more extensible
+  API than one function with a dozen parameters. With the FileLoader and
+  FileSaver, we can add properties, functions and even signals. And the
+  FileLoader and FileSaver classes are quite useful in gedit: when an error
+  occurs and the user clicks on a button in the info bar, the loader or saver
+  object is reconfigured and the operation is relaunched, without the need to
+  keep the initial configuration around. Also, the FileLoader or FileSaver
+  properties are applied to the GtkSourceFile object only on a successful
+  operation, so the GtkSourceFile state is (normally) consistent with the
+  underlying file on the disk, at least at the time of the last load or save
+  operation done with GtkSourceView.
+</p>
+
+<h3>Possible follow-ups work</h3>
+
+<p>
+  A possible follow-up is to make the front-end code more reusable, either by
+  creating higher-level classes in GtkSourceView, or by creating a git
+  submodule, like the
+  <a href="https://gitlab.gnome.org/GNOME/libgd" target="_blank">libgd</a>
+  (without API stability guarantees in the latter case).
+</p>
+
+<p>
+  Another possible follow-up is to analyze and improve the performances, which
+  are currently quite bad. For short files it is not visible of course, but
+  opening a very big log file takes more time than with other popular text
+  editors.
+</p>
+
+<p>
+  There are other possible improvements, like unescaping invalid characters
+  when saving, or avoid blocking the GtkTextBuffer when (auto-)saving a short
+  remote file on a slow network connection.
+</p>
+
+<h3>Changes for gedit plugins</h3>
+
+<p>
+  Unfortunately there are some changes in the gedit API for plugins, mainly in
+  GeditDocument. Fortunately the changes are
+  <a href="https://wiki.gnome.org/Apps(2f)Gedit(2f)Attic(2f)Old_API_Changes.html" target="_blank">well documented</a>,
+  and most plugins should still work without any modification.
+</p>
+
+<h3>Conclusion</h3>
+
+<p>
+  The file loading and saving can quickly become a fairly complex beast. Now
+  this code is available for other GTK+ text editors.
+</p>
+
+<p>
+  Thanks to
+  <a href="http://blogs.gnome.org/pbor/" target="_blank">Paolo Borelli</a>
+  for the reviews!
+</p>
+
+<p>
+  TL;DR:
+</p>
+<ul>
+  <li>In GtkSourceView: 29 files changed, 7909 insertions(+), 3 deletions(-)</li>
+  <li>In gedit: 49 files changed, 1888 insertions(+), 8819 deletions(-)</li>
+  <li>In gedit-plugins: 11 files changed, 22 insertions(+), 31 deletions(-)</li>
+</ul>
+
+<p>
+  This is a 12% code increase in GtkSourceView, and a 6% code decrease in
+  gedit.
+</p>
+
+<p>
+  PS: As usual, some tests would be more than welcome before the stable version
+  in September.
+</p>
+
+<p>
+  <strong>Edit:</strong> update most of the links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

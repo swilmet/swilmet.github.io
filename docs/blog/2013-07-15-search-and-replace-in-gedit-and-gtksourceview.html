@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search and replace in gedit and GtkSourceView | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2013-07-15">2013-07-15</time>: Search and replace in gedit and GtkSourceView</h2>
+
+<p>
+  My GSoC on GtkSourceView/gedit/… is coming along nicely. Here is a screenshot
+  of the new search in gedit:
+</p>
+
+<p>
+  <em>New gedit search</em> (screenshot lost)
+</p>
+
+<p>
+  The visible new thing is the "298 of 703" in the search entry, that shows the
+  position of the current search match, and the total number of occurrences.
+  This is just the tip of the iceberg, as much of the work has been done under
+  the hood.
+  <a href="http://blogs.gnome.org/nacho/">Ignacio</a> (nacho),
+  my mentor, has improved GdTaggedEntry, and I worked on the new API in
+  GtkSourceView, and adapted gedit to use the new API.
+</p>
+
+<p>
+  Note: almost all my work has already been merged upstream, but not the new
+  search entry.
+</p>
+
+<h3>Search and replace API in GtkSourceView</h3>
+
+<p>
+  The new API in GtkSourceView
+  <a href="https://developer.gnome.org/gtksourceview/unstable/GtkSourceBuffer.html">is available</a>.
+  One thing is missing though: regex search.
+</p>
+
+<p>
+  Why you should use this API:
+</p>
+<ul>
+  <li>
+    It is asynchronous, i.e. the user interface is normally not blocked when
+    the <code>GtkTextBuffer</code> is scanned. And the asynchronous overhead is
+    small;
+  </li>
+  <li>
+    The search matches are highlighted;
+  </li>
+  <li>
+    You can get the total number of occurrences and the position of a certain
+    occurrence easily;
+  </li>
+  <li>
+    For each search, the buffer is scanned at most once. Once the search
+    occurrences are found, navigating through them doesn't require to re-scan
+    the buffer, thanks to <code>gtk_text_iter_forward_to_tag_toggle()</code>.
+    As a result, most operations are really fast;
+  </li>
+  <li>
+    The regex search (still to come) will normally do multi-segment matching,
+    also called incremental matching: when a partial match is returned, we take
+    a bigger segment. No need to waste memory space to retrieve the entire
+    buffer contents.
+  </li>
+</ul>
+
+<p>Nice, isn't it?</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

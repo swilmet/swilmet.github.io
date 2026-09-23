@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About code quality and maintainability | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2012-08-01">2012-08-01</time>: About code quality and maintainability</h2>
+
+<p>
+  It can be difficult to write clean code, that is easy to understand, split in
+  nice and well-defined functions that do one thing but do it well, with good
+  variables names, and so on. For the maintainability, it is really important.
+</p>
+<p>
+  In fact, a code is read far more often than it is written. For fixing a bug,
+  adding a feature, or simply see how it is implemented.
+</p>
+
+<h3>General Advices</h3>
+<p>
+  There are some general advices, for example:
+</p>
+<ul>
+  <li>
+    A function's name should be sufficient to know all what the function really
+    does.
+  </li>
+  <li>
+    Hide implementation details, and use the domain-specific vocabulary, no
+    technical words, if possible. An extreme example:
+    <code>get_last_document()</code> is better than
+    <code>get_top_stack()</code>.
+  </li>
+  <li>
+    Avoid focusing on performance from the beginning. About 10% of the code is
+    responsible of 90% of the execution time. An optimized code is more
+    difficult to understand, so it is better to optimize only the 10%.
+  </li>
+</ul>
+
+<h3>Every Details Matters</h3>
+<p>
+  Small details can also improve the code readability. Take for example this
+  line:
+</p>
+<pre>
+g_return_if_fail (foo &gt;= min_value &amp;&amp; foo &lt;= max_value);
+</pre>
+<p>
+  And compare it with this one:
+</p>
+<pre>
+g_return_if_fail (min_value &lt;= foo &amp;&amp; foo &lt;= max_value);
+</pre>
+<p>
+  Which one do you prefer? In the second sample, we can visually see the
+  <code>foo</code> variable between the minimum and maximum values.
+</p>
+<p>
+  Many such small improvements, taken together, make the code more enjoyable to
+  read.
+</p>
+
+<h3>Code Complete</h3>
+<p>
+  We can learn these and other advices by reading some (good) existent code, by
+  working with more experienced developers, AND by sitting in a comfortable
+  sofa with a cup of coffee or tea while reading a book.
+</p>
+<p>
+  I personally have read
+  <a href="https://stevemcconnell.com/books/">Code Complete</a>
+  (by Steve McConnell) last year. It seems the reference on the subject. But
+  there are other similar books, for instance
+  <a href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/">The Pragmatic Programmer</a>
+  (by David Thomas and Andrew Hunt).
+</p>
+<p>
+  Although the editor of Code Complete is Microsoft Press, the book is not
+  related to Microsoft or Windows. The author explains sometimes stuff related
+  to open source, UNIX and Linux, but one can regret the total absence of the
+  mention "free software" and all the benefits of freedom: be able to learn by
+  reading other's code, etc. But if you are here, you already know all of this,
+  because you are on the good side ;)
+</p>
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

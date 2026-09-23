@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search and replace behavior for a text editor | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2013-12-08">2013-12-08</time>: Search and replace behavior for a text editor</h2>
+
+<p>
+  The search and replace is one of those features that have a wide variety of
+  different implementations and behaviors across applications. The nice thing
+  with my work I did this summer on
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>,
+  is that you can build whatever behavior you want by using
+  <a href="https://developer.gnome.org/gtksourceview/unstable/GtkSourceSearchContext.html">the new search and replace API</a>.
+  And that's exactly what I did for
+  <a href="https://gitlab.gnome.org/World/gedit/enter-tex">LaTeXila</a>,
+  which has a new behavior for the replace button.
+</p>
+
+<p>
+  <em>Screenshot of the search and replace in LaTeXila</em> (image lost)
+</p>
+
+<p>
+  When we replace an occurrence, we generally have the time and we don't have a
+  train to take (or we are already in the train). And it's better to see how
+  the content looks like with the replacement text, to see if everything is
+  fine and make adjustments if required. As a consequence, when you click on
+  the replace button, it just replaces the search match without moving to the
+  next occurrence (which can be far away, so we would not be able to see the
+  replaced text).
+</p>
+
+<p>
+  When you have just replaced an occurrence, no text is selected. If you click
+  a second time on the replace button, it goes to the next occurrence, and
+  selects it, to repeat the process. Nice, isn't it?
+</p>
+
+<p>
+  Voilà, that's all, I just wanted to share this information. It can be
+  interesting for other applications.
+</p>
+
+<p>
+  <strong>Edit:</strong> update some links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

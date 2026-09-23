@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Using the GtkSourceView API to write scripts that manipulate text | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2016-08-17">2016-08-17</time>: Using the GtkSourceView API to write scripts that manipulate text</h2>
+
+<p>
+  In the
+  <a href="https://gitlab.gnome.org/swilmet/gdev-c-utils" target="_blank">gnome-c-utils</a>
+  repository, I wrote some scripts that use the
+  <a href="https://gitlab.gnome.org/GNOME/gtksourceview" target="_blank">GtkSourceView</a>
+  library.
+</p>
+
+<p>
+  When a script needs to read some text, search something in it, and possibly
+  edit the content, then having a GtkTextBuffer is really convenient.
+</p>
+
+<p>
+  GtkTextBuffer is good at navigating through text, with all the GtkTextIter
+  functions. The content can be edited easily. And the GtkSourceView library
+  adds interesting features like regex search &amp; replace and file loading
+  and saving with character encoding handling (GtkTextBuffer accepts only valid
+  UTF-8).
+</p>
+
+<p>
+  So, that's it. I just wanted to share that I find it convenient to write
+  scripts with GtkSourceView (but maybe because I speak the
+  GtkTextView/GtkSourceView API fluently).
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>

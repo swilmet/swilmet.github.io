@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>gspell news bis | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2016-03-09">2016-03-09</time>: gspell news bis</h2>
+
+<p>
+  Some more
+  <a href="https://gitlab.gnome.org/GNOME/gspell" target="_blank">gspell</a>
+  news (see the
+  <a href="2015-11-20-gspell-news.html" target="_blank">previous iteration</a>):
+</p>
+
+<ul>
+  <li>
+    gspell has been re-licensed from GPLv2+ to LGPLv2.1+.
+  </li>
+
+  <li>
+    gspell no longer depends on the libxml2 and GtkSourceView libraries.
+  </li>
+
+  <li>
+    gspell 1.0 will be released at the same time as GNOME 3.20 (in a few
+    weeks), with a stable API.
+  </li>
+
+  <li>
+    There has been several iterations on the API, making it easier to use. See
+    below.
+  </li>
+
+  <li>
+    In gedit 3.18 there was a regression: the current word being typed was
+    spell checked. Which is now fixed, because it was annoying to have a red
+    wavy underline appearing constantly while typing.
+  </li>
+
+  <li>
+    Words with apostrophes – like “doesn't” – are now supported!
+  </li>
+
+  <li>
+    And a testsuite has been written.
+  </li>
+</ul>
+
+<h3>API design</h3>
+
+<p>
+  See the
+  <a href="https://gedit-text-editor.org/developer-docs/gspell-1/" target="_blank">gspell API reference</a>.
+  There are two things worth mentioning that are generally useful when designing APIs.
+</p>
+
+<p>
+  First, a constraint has been directly translated into the API itself instead
+  of allowing an illogical combination in an application.
+</p>
+
+<p>
+  More specifically, for the same GtkTextBuffer, it doesn't make sense to use a
+  different GspellChecker between an inline checker and an “external” checker
+  (e.g. a dialog window). Since it's the same GtkTextBuffer, it should be the
+  same GspellChecker to share the session dictionary (when you click on
+  <em>Ignore All</em>, the word is added to the session dictionary). So instead
+  of having a spell-checker property on both the inline checker and the
+  external checker, now a GspellChecker must be attached to a GtkTextBuffer
+  with <code>gspell_text_buffer_set_spell_checker()</code>. That latter
+  function takes a GtkTextBuffer argument, there is no GspellTextBuffer
+  subclass since there is already one in the GtkSourceView library. That's
+  where <code>g_object_set_data()</code> becomes useful. And by attaching the
+  GspellChecker to the GtkTextBuffer, we no longer need to keep the
+  GspellChecker object around in the application code, we can get it with
+  <code>gspell_text_buffer_get_spell_checker()</code>.
+</p>
+
+<p>
+  The other thing worth mentioning is that at another place a class is more lax
+  and accepts a certain state instead of documenting “please check the value of
+  […]”. More precisely, GspellChecker now accepts a NULL language in the case
+  there are no dictionaries installed.
+</p>
+
+<p>
+  One of my goals when developing gspell is also to learn writing good APIs, so
+  if you see some possible improvements, don't hesitate! It's too late for the
+  1.x versions, but I can keep a bug around on bugzilla with the 2.0 target.
+  And of course, any other comments or testing are welcome.
+</p>
+
+<p>
+  Thanks to
+  <a href="https://blogs.gnome.org/pbor/" target="_blank">Paolo Borelli</a>
+  for the API review, and thanks to the numerous GNOME translators! gspell 1.0
+  will be rock solid!
+</p>
+
+<p>
+  <strong>Edit:</strong> update links (in 2026).
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>
