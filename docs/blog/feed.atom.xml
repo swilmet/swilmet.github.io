@@ -130,6 +130,24 @@ $ echo 'Hidden=true' >> ~/.config/autostart/org.gnome.Software.desktop
 </entry>
 
 <entry>
+  <title>An API documentation system - pragmatic advice for program internals too</title>
+  <id>https://wilmet-software.be/blog/2020-01-02-api-doc-system.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2020-01-02-api-doc-system.html" />
+  <published>2020-01-02T10:00:00Z</published>
+  <updated>2020-01-02T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  An opinion on API documentation systems:
+</p>
+<p>
+  <a href="../PDFs/api-doc.pdf" target="_blank">api-doc.pdf</a>
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
   <title>Amtk – Actions, Menus and Toolbars Kit for GTK+ applications</title>
   <id>https://wilmet-software.be/blog/2017-07-20-amtk-actions-menus-and-toolbars-kit-for-gtk-applications.html</id>
   <link type="text/html" href="https://wilmet-software.be/blog/2017-07-20-amtk-actions-menus-and-toolbars-kit-for-gtk-applications.html" />
