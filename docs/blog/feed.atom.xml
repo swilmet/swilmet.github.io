@@ -130,6 +130,24 @@ $ echo 'Hidden=true' >> ~/.config/autostart/org.gnome.Software.desktop
 </entry>
 
 <entry>
+  <title>A DAG of components - for an internal architecture too</title>
+  <id>https://wilmet-software.be/blog/2020-01-15-dag-of-components.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2020-01-15-dag-of-components.html" />
+  <published>2020-01-15T10:00:00Z</published>
+  <updated>2020-01-15T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  An article about software architecture best-practices:
+</p>
+<p>
+  <a href="../PDFs/dag-of-components.pdf" target="_blank">dag-of-components.pdf</a>
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
   <title>An API documentation system - pragmatic advice for program internals too</title>
   <id>https://wilmet-software.be/blog/2020-01-02-api-doc-system.html</id>
   <link type="text/html" href="https://wilmet-software.be/blog/2020-01-02-api-doc-system.html" />
