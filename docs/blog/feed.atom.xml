@@ -130,6 +130,38 @@ $ echo 'Hidden=true' >> ~/.config/autostart/org.gnome.Software.desktop
 </entry>
 
 <entry>
+  <title>GAFAM to MAGMA</title>
+  <id>https://wilmet-software.be/blog/2022-09-20-gafam-magma.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2022-09-20-gafam-magma.html" />
+  <published>2022-09-20T10:00:00Z</published>
+  <updated>2022-09-20T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  The GAFAM are evil, and the nice thing about it is that we can call them the
+  <em>MAGMA</em> now (replace the F with M for Meta).
+</p>
+<p>
+  We can also call the MAGMA a form of <em>hyper-capitalism</em>: they are so
+  big that they destroy any kind of competition, by either buying other
+  companies, or creating something better. The "barrier to entry" to compete
+  with them is just way too high.
+</p>
+<p>
+  So it's urgent that at some point the governments act to split these big
+  corporations and stop the magma from rolling in any further.
+</p>
+<p>
+  <strong>Edit:</strong> see also
+  <a href="https://ploum.net">Ploum</a>'s
+  <a href="https://ploum.net/2022-09-20-magma.html">blog post</a>
+  about the subject.
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
   <title>A DAG of components - for an internal architecture too</title>
   <id>https://wilmet-software.be/blog/2020-01-15-dag-of-components.html</id>
   <link type="text/html" href="https://wilmet-software.be/blog/2020-01-15-dag-of-components.html" />
