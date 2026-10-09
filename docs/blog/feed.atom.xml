@@ -249,6 +249,182 @@ $ echo 'Hidden=true' >> ~/.config/autostart/org.gnome.Software.desktop
 </entry>
 
 <entry>
+  <title>We need more sub-languages</title>
+  <id>https://wilmet-software.be/blog/2022-08-27-we-need-more-sub-languages.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2022-08-27-we-need-more-sub-languages.html" />
+  <published>2022-08-29T10:00:00Z</published>
+  <updated>2022-08-29T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  In my opinion, what we need is not new languages, but more
+  <em>sub</em>-languages. By that I mean, either:
+</p>
+<ul>
+  <li>
+    A safe implementation of a sub-set of an unsafe language;
+  </li>
+  <li>
+    An easier-to-learn-and-to-work-with language of a sizable language and
+    standard library.
+  </li>
+</ul>
+
+<p>Examples of possible applications:</p>
+<ul>
+  <li>
+    A SubC language for which it would be easier to write a compiler that makes
+    the language safe or at least safer compared to the full C specification.
+    Because it would be easier to refactor a C codebase to a sub-set of C,
+    rather than rewriting in another language. Note that at some rare occasions
+    (especially in low-level software), some inherently unsafe code <em>is</em>
+    necessary, and C allows it.
+  </li>
+  <li>
+    Avoiding a proliferation of DSLs (Domain Specific Languages), for example
+    taking a sub-set of Java for writing build system instructions.
+  </li>
+</ul>
+
+<p>
+  For related (and already implemented or prototyped) work on making deep-seated
+  languages safer, I recommend to look at the
+  <a href="https://www.humprog.org/~stephen/">papers written by Stephen Kell</a>.
+</p>
+<p>
+  Specifically for the GNOME community, Kell writes about GObject and its
+  introspection system (GIR) in
+  <em>Towards a dynamic object model within Unix processes</em>, with
+  <code>liballocs</code>. I didn't try testing it in practice against codebases
+  I work on, but it would be valuable.
+</p>
+
+<h3>Why? A personal perspective</h3>
+
+<p>
+  The workplace is more and more specialized, we cannot be generalist and
+  specialists at the same time, and things like DevOps is just causing too much
+  stress on already pretty overwhelmed computer scientists. (That's where we
+  must not hesitate to subcontract).
+</p>
+<p>
+  Juggling between different languages and technologies can be difficult. I
+  would rather be very proficient with a single main programming language and
+  its standard library for which I have access to its main characteristics at my
+  fingertips.
+</p>
+<p>
+  For build systems, the usual argument put forward for a DSL is that it's not
+  dependent on a specific language implementation (and a specific version of
+  it). But CMake has a somewhat special way to handle variables and scoping, and
+  Meson totally lacks any variable scope (all variables are global, which makes
+  me uncomfortable, but that's not an overall feeling among Meson users and
+  authors).<br />
+  So, why not a sub-set of the Java syntax, alongside a very small sub-set of
+  its standard library, plus some classes specific to the build system. Running
+  that kind of build instructions would work with a compliant Java runtime
+  environment (JRE), but alternative implementations would be feasible too, if a
+  sufficiently small sub-set of the language is carefully chosen. Most
+  developers would at least feel at home.
+</p>
+<p>
+  Note: this is an opinion blog post, I don't intend to work in that area right
+  in the near future :-)
+</p>
+
+<h3>More thoughts</h3>
+<ul>
+  <li>
+    For a potential SubC language: having a tool to locate unsafe parts in a
+    codebase, and add annotations (like with GObject Introspection) to the
+    source code for what the C syntax lacks for safeness.
+  </li>
+  <li>
+    Additionally, I think for high-level code like a GTK-based library or
+    application, more runtime checks (e.g., for memory handling: avoiding
+    dangling references and leaks) would not hurt too much the performances
+    and would be highly beneficial. The C specification also doesn't preclude
+    such runtime checks.
+  </li>
+  <li>
+    Above, I didn't want to criticize Meson or CMake, lots of people like those.
+    It was more to give an example of avoiding Domain Specific Languages. And I
+    know, Java is not the most appreciated language within the GNOME community
+    :-) But it's a popular language and often taught during computer science
+    studies.
+  </li>
+  <li>
+    For a related matter, see the short article that I wrote about
+    <a href="2022-05-20-mallard-ducktype.html" target="_blank">Mallard and Ducktype</a>.
+    Again, if you intend to write lots of documentation, Ducktype is a fine
+    language. It really depends if you need to work with lots of different
+    lightweight markup formats.
+  </li>
+  <li>
+    A "sub-language" can also just be an older standard of an existing language,
+    plus some additional compile-time or run-time checks. With time, languages
+    become larger and larger, to the point that an initially easy-to-learn
+    language like Python becomes hard to master all its features. Also because
+    adapting the code to new standards can be tedious work, especially to give a
+    facelift to have more idiomatic code for the new ways of doing things.
+  </li>
+  <li>
+    A "sub-language" could also just be applied to the documentation (including
+    the API reference) and text editor tooling (auto-completion etc). A related
+    idea would be a step-by-step learning, progressively increasing the language
+    coverage.
+  </li>
+</ul>
+
+<p>
+  <br />
+  P.S.: Note that I don't have practical experience for implementing some of the
+  above, for example I never really designed a new or sub programming language.
+  So take my thoughts with a grain of salt ;-) However I have experience for
+  high-level plumbing and GUI application development (developer tools, mainly).
+</p>
+<p>
+  P.P.S.: Also I've had a (bad) experience being a "generalist + specialist" by
+  myself (for small projects in the areas for which I was not a specialist). But
+  CS has no mercy, computers are quite square. All the details <em>need</em> to
+  be written (and it's unfeasible to anticipate all of them when being asked for
+  a deadline estimation, by the way), and every flaw is just around the corner,
+  it can haunt you at any and unpredictable times. Hence my preference for a
+  single main programming language plus possibly several subsets of it instead
+  of DSLs (and just be a developer or architect, not meddling with sysadmin
+  stuff that I master far less well). And! work within a diverse team, being
+  able to delegate work, subcontract like I already said, and so forth.
+</p>
+
+<p><small><em>
+  Thanks for reading. Even though it's not possible to write comments on this
+  blog, don't hesitate to drop me an email. I do read them, and like to have
+  feedbacks.
+</em></small></p>
+    </div>
+  </content>
+</entry>
+
+<entry>
+  <title>Choosing between Mallard and Ducktype</title>
+  <id>https://wilmet-software.be/blog/2022-05-20-mallard-ducktype.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2022-05-20-mallard-ducktype.html" />
+  <published>2022-05-20T10:00:00Z</published>
+  <updated>2022-05-20T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Short article about Mallard (an XML documentation format) and Ducktype (the
+  evolution of Mallard as a lightweight syntax).
+</p>
+<p>
+  <a href="../PDFs/mallard-ducktype.pdf" target="_blank">mallard-ducktype.pdf</a>
+</p>
+    </div>
+  </content>
+</entry>
+
+<entry>
   <title>A DAG of components - for an internal architecture too</title>
   <id>https://wilmet-software.be/blog/2020-01-15-dag-of-components.html</id>
   <link type="text/html" href="https://wilmet-software.be/blog/2020-01-15-dag-of-components.html" />
