@@ -130,6 +130,254 @@ $ echo 'Hidden=true' >> ~/.config/autostart/org.gnome.Software.desktop
 </entry>
 
 <entry>
+  <title>The life of a GUI application</title>
+  <id>https://wilmet-software.be/blog/2023-04-25-the-life-of-a-GUI-application.html</id>
+  <link type="text/html" href="https://wilmet-software.be/blog/2023-04-25-the-life-of-a-GUI-application.html" />
+  <published>2023-04-25T10:00:00Z</published>
+  <updated>2023-04-25T10:00:00Z</updated>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+<p>
+  Some generalities about the life of a GUI application. What problems are
+  usually encountered as developers, with solutions.
+</p>
+
+<h3>At time t0 - decisions when creating a new app</h3>
+
+<p>
+  When creating a <em>new</em> application, some decisions need to be taken. The
+  ones that interest us in this article:
+</p>
+<ul>
+  <li>Which GUI toolkit to use.</li>
+  <li>Which Human Interface Guidelines (HIG) to follow.</li>
+</ul>
+<p>
+  These are often inter-related. And we tend to choose the latest versions of
+  both at the time of the decision.
+</p>
+<p>
+  Examples:
+</p>
+<ul>
+  <li>
+    In the past, one could choose GTK 2 with the GNOME 2 HIG (with the classic
+    menubar and toolbar).
+  </li>
+  <li>
+    At the time of writing, one could choose GTK 4 (with libadwaita) with the
+    latest GNOME HIG (with adaptive layouts, suitable for both desktop and
+    mobile devices).
+  </li>
+</ul>
+<p>
+  (Note that it's also possible to write one backend plus several frontends, to
+  have for instance a GTK frontend, a Qt frontend, terminal frontends (CLI,
+  TUI), and so on, without forgetting the web and the cloud of course).
+</p>
+
+<h3>First bursts of development</h3>
+<p>
+  Once the GUI toolkit (and version) chosen, plus the HIG, the development
+  starts!
+</p>
+<p>
+  One thing to note already is that the application developer is - in practice -
+  limited by what the GUI toolkit provides (and what is easily consumable). Even
+  though it's possible for the app developer to implement custom widgets based
+  on lower-level API, it's much harder to do so and many app developers don't go
+  that route.
+</p>
+<p>
+  So what the GUI toolkit provides shapes what the application looks like, how
+  features are presented to the user and how they are implemented.
+</p>
+<p>
+  We would prefer to have as few frontend code as possible, to focus on the
+  backend and features, but in practice we realize that the frontend is not
+  <em>that</em> easy to implement, after all. A GUI application is not a batch
+  program! Especially if we want to create a real product with a long lifetime,
+  and a revenue stream (incidentally).
+</p>
+
+<h3>Several years later, the GUI toolkit and HIG evolve</h3>
+<p>
+  This is a fact of life, design is in constant evolution. As such, the HIG
+  evolve, and the toolkit API typically reflects the changes over time (be it
+  with API that become deprecated, or with new major versions that introduce new
+  APIs and new ways of doing things).
+</p>
+<p>
+  But we have created an application! Most users like it the way it is, and
+  perhaps we are earning a living thanks to it.
+</p>
+<p>
+  So, what to do?
+</p>
+<p>
+  By implementing the new design, we know that it will attract potential new
+  users. Also to not become completely irrelevant a decade from now. But it has
+  its own risks.
+</p>
+<p>
+  In my humble opinion, the perfect HIG/design doesn't exist. All have strengths
+  and weaknesses. As a consequence, radically changing the design of an
+  application will make <em>some</em> users unhappy, and contributes negatively
+  to the churn rate (temporarily, we hope so).
+</p>
+<p>
+  From a technical point of view, adapting the codebase to the new HIG and API
+  can involve a lot of work (it depends on how big the application is; an older
+  application usually has more features). When we heavily modify the code, there
+  can be regressions, etc. It's sometimes possible to quickly adapt the code,
+  but then the code is awkward to read and would need a lot of cleanup
+  afterwards (it's a technical debt). If that cleanup is never done, the
+  codebase becomes messier and messier, with bugs lurking a bit everywhere. (The
+  general stability also contributes a lot to the popularity of the
+  application, so technical debt must be taken with care, if at all).
+</p>
+
+<h3>Some solutions to keep the best of both worlds</h3>
+<p>
+  Having a clear separation between the backend and the frontend is a good
+  solution. "Only" the frontend code needs to be adapted or rewritten. The
+  backend can be written in a library fashion (it can be an internal/static
+  library with an unstable API, or a shared library with more API stability
+  guarantees). That way, the backend will have a longer lifetime.
+</p>
+<p>
+  Give to the user the choice between several design alternatives. Like it is
+  done by LibreOffice, for example: when starting the application for the first
+  time, ask the user what he/she prefers (with also the option in the
+  preferences dialog to change our mind later).
+</p>
+<p>
+  Or follow a software product line approach: have a different application for
+  each main design/HIG. With as much code in common as possible between the
+  different apps.
+</p>
+
+<h3>When adapting to the latest HIG is too much work</h3>
+<p>
+  As outlined above, adapting the frontend to a new design paradigm can be a lot
+  of work. It's technically possible, but if the developers lack the time, it
+  won't be done, especially if everything already works fine.
+</p>
+<p>
+  That said, it would still be valuable to port the application to the newer
+  versions of the GUI toolkit. Because at some point the older toolkit versions
+  become obsolete and no longer receive security fixes.
+</p>
+<p>
+  This is where there can be a problem: <em>if the newer GUI toolkit versions
+  have removed the mechanisms for the older HIGs</em>.
+</p>
+
+<h3>Example: GTK 4 and older GNOME HIG mis-support</h3>
+<p>
+  To make the discussion concrete, let's give an example with GTK and GNOME.
+</p>
+<p>
+  GTK 4 still has some support for the traditional UI with a menubar and
+  toolbar. But the API has completely changed compared to GTK 2 or the first
+  GTK 3 versions. And certain things are just no longer possible to do (as far
+  as I know; correct me if I'm wrong), such as putting icons in menu items, or
+  showing a longer description in the statusbar when a menu item is hovered with
+  the mouse.
+</p>
+<p>
+  So basically, GTK 4 has removed some of the mechanisms needed to implement the
+  older design. As explained, it's just software, so an application is able
+  to implement this itself with the lower-level APIs, but it's a lot of work.
+</p>
+<p>
+  Thus, some application developers are stuck with older versions of the GUI
+  toolkit. Without good solutions at their disposal.
+</p>
+
+<h3>Sandboxing as a solution</h3>
+<p>
+  We mentioned the security problem of running apps that use a very old version
+  of a GUI toolkit. The solution is to run such apps sandboxed, in a container
+  or virtual machine.
+</p>
+
+<h3>Developing a GUI toolkit - mechanism versus policy</h3>
+<p>
+  I fully acknowledge that developing a GUI toolkit is not an easy task. Here
+  are some general thoughts / philosophy about how things could be better from
+  the toolkit point of view. (Easier said than done, as usual).
+</p>
+<p>
+  I first heard about "mechanism versus policy" when reading the beginning of
+  <a href="https://lwn.net/Kernel/LDD3/">Linux Device Drivers</a>
+  (see chapter 1, The Role of the Device Driver). A device driver should expose
+  all <em>what</em> the hardware is capable to do (the mechanism). Then
+  higher-level software can choose <em>how</em> those capabilities can be used
+  (the policy).
+</p>
+<p>
+  For a GUI toolkit, we could envision a clear split between the mechanism (with
+  a low-level API) and the policy (with higher-level API, following a specific
+  HIG).
+</p>
+<p>
+  The mechanism API would be more stable over time. Without feature removals.
+  But since it's low-level, it's not the most convenient to use. But it would
+  always be there, in case an application needs it.
+</p>
+<p>
+  The policy API would be more subject to changes, since the HIG evolves. But it
+  doesn't prevent older policies' APIs to be kept around.
+</p>
+<p>
+  (For GTK's case, there is already GDK as the low-level API, but GDK 4 is
+  completely different from GDK 3, to follow more the Wayland peculiarities. And
+  the mechanical way of creating classic menus in GTK 3 has fallen through the
+  cracks in GTK 4).
+</p>
+
+<h3>Conclusion</h3>
+<p>
+  Developing a GUI application that has existed for a long time (several
+  decades) is very different from developing a brand-new app. But - some day -
+  the new app will sooner or later face the same kind of problems. So I wanted
+  to put some perspective, and give some advice.
+</p>
+<p>
+  If you've followed some courses on software engineering, or just have read
+  some books (on the subject), what I described in this article should be
+  familiar. Since I talked about libraries (both for the application codebase,
+  and obviously the GUI toolkit as well), the problem of re-usability directly
+  comes to mind.
+</p>
+<p>
+  So as a conclusion and to give you some food for thoughts, here are some
+  quotes taken from
+  <a href="https://www.oreilly.com/library/view/facts-and-fallacies/0321117425/">Facts and Fallacies of Software Engineering</a>
+  (Robert Glass):
+</p>
+<blockquote>
+  Reuse-in-the-small (libraries of subroutines) [...] is a well-solved
+  problem.<br />
+  Reuse-in-the-large (components) remains a mostly unsolved problem, even though
+  everyone agrees it is important and desirable.<br />
+  Reuse-in-the-large works best in families of related systems and thus is
+  domain-dependent.
+</blockquote>
+<p>
+  Happy hacking!
+</p>
+
+<p><small><em>
+  Even though it's not possible to write comments on this blog, don't hesitate
+  to drop me an email. I do read them, and like to have feedbacks.
+</em></small></p>
+    </div>
+  </content>
+</entry>
+
+<entry>
   <title>What Linux distributions to recommend to computer scientists</title>
   <id>https://wilmet-software.be/blog/2022-11-26-recommendation-linux-distros.html</id>
   <link type="text/html" href="https://wilmet-software.be/blog/2022-11-26-recommendation-linux-distros.html" />
