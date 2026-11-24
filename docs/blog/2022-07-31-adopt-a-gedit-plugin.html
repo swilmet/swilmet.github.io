@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Adopt a gedit plugin! | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2022-07-31">2022-07-31</time>: Adopt a gedit plugin!</h2>
+
+<p>
+  First a good news,
+  <a href="https://wiki.gnome.org/Apps/Gedit">gedit</a>
+  is back on the road. After doing a long break, I feel energized again to
+  develop gedit and related projects.
+</p>
+
+<p>
+  The next version of gedit will be released
+  <a href="https://discourse.gnome.org/t/gedit-next-version-will-be-released-when-ready/10599">when ready</a>,
+  like Debian.
+</p>
+
+<p>
+  And here comes where you can help! Especially by adopting the development and
+  maintenance of a gedit plugin. Be it part of the
+  <a href="https://gitlab.gnome.org/GNOME/gedit">main gedit repository</a>, or
+  <a href="https://gitlab.gnome.org/GNOME/gedit-plugins">gedit-plugins</a>, or
+  ... a removed plugin (the small bad news).
+</p>
+
+<p>
+  First and foremost, nothing is set in stone, a long-term project like gedit
+  grows organically. A removed plugin doesn't mean the end of the world, it can
+  be re-added later, or someone can give it a new life by developing it in its
+  own repository. And, remember, the next version will be released
+  <em>when ready</em>.
+</p>
+
+<p>
+  The list of removed plugins (all from the gedit-plugins repository):
+</p>
+<ul>
+  <li>Commander</li>
+  <li>Find in files</li>
+  <li>Translate</li>
+</ul>
+
+<p>
+  They all have a reason for having been removed:
+</p>
+<ul>
+  <li>
+    <em>Commander</em> was broken, it was anyway not possible to load that
+    plugin anymore. It also targets advanced users.
+  </li>
+  <li>
+    <em>Find in files</em>: I hesitated to remove it, it could be re-added. The
+    main reason is more general (for all plugins), and will be explained below.
+  </li>
+  <li>
+    <em>Translate</em> depends on an external internet service, if that service
+    is shut down or changes its way to make use of it (its API), the plugin will
+    be broken. So it needs regular maintenance. There are also other
+    desktop applications like
+    <a href="https://flathub.org/apps/details/app.drey.Dialect">Dialect</a>.
+  </li>
+</ul>
+
+<p>
+  There is a more general reason. Here is how it goes when a plugin is included
+  in gedit:
+</p>
+<ol>
+  <li>
+    A contributor writes the plugin and proposes it for inclusion.
+  </li>
+  <li>
+    A gedit maintainer looks at the purpose of the plugin, to see if it makes
+    sense to include it. If so, a code review is done.
+  </li>
+  <li>
+    Then ideally the original author maintains the code. I said
+    <em>ideally</em>, in practice it regularly happens that the author no longer
+    have time or budget to still work on it.
+  </li>
+</ol>
+
+<p>
+  As a result, it is the main developers who have more and more work to do. At
+  some point it becomes basically unfeasible for a few people or a single person
+  to deal with such a big amount of code. It causes stress for those core
+  contributors, so it's a vicious circle (some developers prefer not to
+  contribute anymore because of that stress).
+</p>
+
+<p>
+  So my hope is that with the release-when-ready, it will give some time to at
+  least revive the <em>Find in files</em> plugin (that plugin is written in
+  Vala).
+</p>
+
+<p>
+  With plugins, it's easier for the code maintenance to be distributed and to
+  scale. After all, the plugin engine is called
+  <a href="https://wiki.gnome.org/Projects/Libpeas">libpeas</a>. If you are
+  interested to take care of a gedit peas, don't hesitate to get in touch ;) !
+</p>
+
+<p>
+  That's all for today, I intend to relate more news around gedit when there are
+  interesting things to communicate.
+</p>
+
+<p><small><em>
+  Even though it's not possible to write comments on this blog, don't hesitate
+  to drop me an email. I do read them, and like to have feedbacks.
+</em></small></p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>
