@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thoughts about WebAssembly outside-the-browser, inside-the-desktop | Sébastien Wilmet's blog</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
+  <link href="feed.atom.xml" type="application/atom+xml" rel="alternate" title="Atom blog feed" />
+
+  <!-- For mobile devices and responsive websites. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+</head>
+
+<body>
+<div id="container">
+
+<header>
+  <h1>Sébastien Wilmet</h1>
+</header>
+
+<nav>
+  <ul>
+    <li>
+      <a href="/index.html" title="About me">About</a>
+    </li>
+    <li class="current">
+      <a href="/blog/" title="Personal blog">Blog</a>
+    </li>
+    <li>
+      <a href="/contact.html" title="Getting in touch">Contact</a>
+    </li>
+  </ul>
+</nav>
+
+<main>
+<h2><time datetime="2021-04-30">2021-04-30</time>: Thoughts about WebAssembly outside-the-browser, inside-the-desktop</h2>
+
+<p>
+  Some reflections about
+  <a href="https://webassembly.org/" target="_blank">WebAssembly</a>,
+  the
+  <a href="https://bytecodealliance.org/" target="_blank">Bytecode Alliance</a>
+  and desktop application development.
+</p>
+<p>
+  To know more about the Bytecode Alliance (WebAssembly outside-the-browser),
+  you can read
+  <a href="https://hacks.mozilla.org/2019/11/announcing-the-bytecode-alliance/" target="_blank">this nice article by Mozilla</a>.
+</p>
+<p>
+  Note that I don't plan to work on this, it's just some thoughts about what
+  could the future bring us. If someone is interested, this would be a really,
+  <em>really</em> nice project that would totally change the landscape of
+  native desktop application development. I'm convinced that the solution isn't
+  Rust or C++, or C# or Java, or whichever new language will appear in 20 years
+  that will make Rust obsolete; the solution is some piece of infrastructure
+  such as <strong>nanoprocesses</strong>.
+</p>
+
+<h3>GNOME, C/GObject and language bindings</h3>
+
+<p>
+  Historically, the GNOME project has chosen the C language to develop its
+  libraries, because it's easier to implement language bindings: to be able to
+  use these libraries from other languages.
+</p>
+<p>
+  The GObject library, at the heart of GNOME, has been implemented with
+  language bindings in mind. When writing C/GObject code, it requires extra
+  work to the developer because of language bindings. With the advantage that
+  after that, the library is automatically usable from a wide range of
+  languages thanks to GObject Introspection.
+</p>
+<p>
+  So, that is the strategy used by GNOME and GTK to provide an attractive
+  development platform for application developers: the latters can ideally use
+  their favorite language to develop an application.
+</p>
+
+<h3>An attractive platform for <em>application</em> developers</h3>
+
+<p>
+  So I've talked about <em>one</em> advantage of the GNOME development platform
+  for application developers: language bindings.
+</p>
+<p>
+  But it's not enough in order to provide an attractive development platform.
+  To be able to write new applications quickly, conveniently, and with enough
+  flexibility, you need high-level, domain-specific libraries, with still an
+  access to lower-level APIs when the need arises.
+</p>
+<p>
+  And this is where GNOME could be much improved! Providing high-level APIs for
+  various kinds of application domains. You don't like that new UI trend? No
+  problem, you can just fork the application, and assemble the UI with
+  different widgets. You want to create a specialized application (in contrast
+  to the general-purpose one that GNOME provides)? No problem, use this
+  framework and configure it that way.
+</p>
+<p>
+  In other words, with an attractive development platform, it's possible to
+  <em>easily</em> create different, but similar, applications in the same
+  domain. Or, in short, a <em>software product line</em>.
+</p>
+<p>
+  Example in a field that I know well, text editors:
+</p>
+<ul>
+  <li>First choice to make:</li>
+  <ul>
+    <li>Either a general-purpose text editor: can be used for different CS languages.</li>
+    <li>Or a specialized text editor: targets a specific CS language or platform.</li>
+  </ul>
+  <li>Second choice to make:</li>
+  <ul>
+    <li>Either a traditional UI.</li>
+    <li>Or a smartphone-like UI.</li>
+  </ul>
+</ul>
+<p>
+  The two choices are orthogonal. With a software product line, it would be
+  possible to have the four combinations. With each application having a small
+  amount of code.
+</p>
+<p>
+  (It would also put an end to the endless discussions and disagreements about
+  which UI is best, just create one application with the desires of the
+  designers, and if a developer disagrees, he or she can create another
+  application. With code written as a library, and a small codebase for the
+  application, this is doable).
+</p>
+
+<h3>But is C/GObject an attractive platform for <em>library</em> developers?</h3>
+
+<p>
+  The conclusion of the previous section is that most of the code should be
+  written in a library fashion. Like the LLVM project does. This prevents
+  reinventing the wheel, and enables new low-hanging fruits. Another name for
+  this is "re-targettable code": you can leverage the codebase for new
+  purposes, as the needs arise and as requirements change.
+</p>
+<p>
+  But for GNOME, writing almost all the code in C/GObject is, well, how to say
+  it, a little cumbersome. The C language is not memory-safe, C/GObject is hard
+  to learn and not used by a lot of developers in the world.
+</p>
+
+<h3>Nanoprocesses, a solution</h3>
+
+<p>
+  Back to the WebAssembly and the Bytecode Alliance topic.
+</p>
+<p>
+  With the concept of nanoprocesses applied to a desktop application, this
+  would bring the benefit of being able to write <em>libraries</em> in various
+  languages other than C, while still having good performances (in contrast to
+  using a more heavyweight IPC solution like D-Bus, which already permits to
+  develop services in other languages, since the services run in their own OS
+  processes).
+</p>
+<p>
+  Inter-nanoprocess communication isn't much slower than regular function
+  calls, as explained in the Mozilla article linked above. So the primary
+  purpose of C/GObject (language bindings) would no longer be relevant.
+</p>
+<p>
+  On a more personal note, I don't know well recent web technologies, but
+  Mozilla's article about the Bytecode Alliance has convinced me. I'm also
+  convinced that I don't want to develop primarily in C/GObject for at least
+  the next decade. I <em>have</em> heavily developed in C/GObject since 2012 or
+  so, during at least 6 years, and then less heavily with ups and downs. With
+  as focus during these years to make more code re-usable (which means,
+  creating new libraries, with higher-level APIs, and losing a few feathers in
+  passing). And, no, sometimes I don't have the same opinion as most other
+  GNOME developers or designers. But I know that I did <em>good</em> work, I
+  was going in the right direction architecture-wise, I have received many
+  thank-you emails from users over the years.
+</p>
+<p>
+  This article outlines potential <em>solutions</em>, <em>actionable</em>
+  things. To stay relevant compared to web applications, the cloud, etc.
+  Because, I still prefer "normal", desktop applications for which I own my
+  data, is privacy-respecting, without ads, etc etc ;-)
+</p>
+
+</main>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2026, Sébastien Wilmet</p>
+</footer>
+</body>
+</html>
